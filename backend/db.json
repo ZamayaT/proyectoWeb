@@ -1,42 +1,4 @@
 {
-  "ramos": [
-    {
-      "id": "1", 
-      "codigo": "CC1002",
-      "nombre": "Introducción a Programación",
-      "dificultad": 2
-    },
-    {
-      "id": "2",
-      "codigo": "CC3001",
-      "nombre": "Algoritmos y Estructuras de Datos",
-      "dificultad": 3
-    },
-    {
-      "id": "3",
-      "codigo": "CC3101",
-      "nombre": "Matemáticas Discretas para la Computación",
-      "dificultad": 4
-    },
-    {
-      "id": "4",
-      "codigo": "CC3301",
-      "nombre": "Programación de Software de Sistemas",
-      "dificultad": 5
-    },
-    {
-      "id": "5",
-      "codigo": "CC5205",
-      "nombre": "Minería de Datos",
-      "dificultad": 2
-    },
-    {
-      "id": "6",
-      "codigo": "CC4302",
-      "nombre": "Sistemas Operativos",
-      "dificultad": 6
-    }
-  ],
   "comentarios": [
     {
       "id": "1",
@@ -49,39 +11,25 @@
       "id": "2",
       "ramoId": "2", 
       "autor": "CodeNovato",
-      "texto": "Si nunca has programado antes, puede ser desafiante al principio, pero con práctica se vuelve más fácil.",
+      "texto": "AED es muy difícil pero fundamental. Recomiendo estudiar los algoritmos paso a paso y practicar mucho.",
       "fecha": "2024-03-10"
     },
     {
       "id": "3",
-      "ramoId": "2",
-      "autor": "DevStudent",
-      "texto": "AED es muy difícil pero fundamental. Recomiendo estudiar los algoritmos paso a paso y practicar mucho.",
-      "fecha": "2024-02-28"
-    },
-    {
-      "id": "4",
-      "ramoId": "4",
-      "autor": "AlgorithmLover",
-      "texto": "El ramo más importante de la carrera. Una vez que entiendes los conceptos, todo lo demás tiene más sentido.",
-      "fecha": "2024-03-01"
-    },
-    {
-      "id": "5",
       "ramoId": "3",
       "autor": "MathStudent",
       "texto": "Matemáticas discretas es clave para entender la lógica detrás de los algoritmos. Al principio cuesta pero es muy útil.",
       "fecha": "2024-02-20"
     },
     {
-      "id": "6",
+      "id": "4",
       "ramoId": "6",
       "autor": "SysAdmin",
       "texto": "Sistemas Operativos es súper interesante pero muy denso. Hay que leer bastante teoría además de programar.",
       "fecha": "2024-01-25"
     },
     {
-      "id": "7",
+      "id": "5",
       "ramoId": "5",
       "autor": "DataScientist",
       "texto": "Minería de datos me gustó mucho! Combina programación con estadística de una forma muy práctica.",
