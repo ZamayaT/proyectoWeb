@@ -1,11 +1,40 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ramos } from './ramos';
+import type { Comentario } from './Types';
+import comentariosService from './comentariosService';
 
 const DetalleRamo = () => {
   const { id } = useParams<{ id: string }>();
   
+  // Estados para comentarios
+  const [comentarios, setComentarios] = useState<Comentario[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  
   // Buscar el ramo por id
   const ramo = ramos.find(r => r.id === id);
+
+  // Cargar comentarios cuando cambie el id
+  useEffect(() => {
+    const loadComentarios = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        setError('');
+        const comentariosData = await comentariosService.getComentariosByRamo(id);
+        setComentarios(comentariosData);
+      } catch (err) {
+        setError('Error al cargar comentarios');
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadComentarios();
+  }, [id]);
 
   // Si no se encuentra el ramo
   if (!ramo) {
@@ -88,7 +117,7 @@ const DetalleRamo = () => {
         </div>
       </div>
 
-      {/* Sección de comentarios (placeholder por ahora) */}
+      {/* Sección de comentarios */}
       <div style={{
         backgroundColor: 'white',
         border: '1px solid #ddd',
@@ -97,11 +126,60 @@ const DetalleRamo = () => {
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}>
         <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
-          Comentarios de estudiantes
+          Comentarios de estudiantes ({comentarios.length})
         </h2>
-        <p style={{ color: '#666', fontStyle: 'italic' }}>
-          Los comentarios se cargarán en el siguiente paso...
-        </p>
+
+        {loading && (
+          <p style={{ color: '#666', fontStyle: 'italic' }}>
+            Cargando comentarios...
+          </p>
+        )}
+
+        {error && (
+          <p style={{ color: '#dc2626', marginBottom: '20px' }}>
+            {error}
+          </p>
+        )}
+
+        {!loading && !error && comentarios.length === 0 && (
+          <p style={{ color: '#666', fontStyle: 'italic' }}>
+            Aún no hay comentarios para este ramo. ¡Sé el primero en compartir tu experiencia!
+          </p>
+        )}
+
+        {!loading && !error && comentarios.length > 0 && (
+          <div>
+            {comentarios.map((comentario) => (
+              <div 
+                key={comentario.id} 
+                style={{
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  padding: '20px',
+                  marginBottom: '15px'
+                }}
+              >
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginBottom: '10px' 
+                }}>
+                  <span style={{ fontWeight: '600', color: '#1e293b' }}>
+                    {comentario.autor}
+                  </span>
+                  <span style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                    {comentario.fecha}
+                  </span>
+                </div>
+                <p style={{ color: '#374151', lineHeight: '1.6' }}>
+                  {comentario.texto}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

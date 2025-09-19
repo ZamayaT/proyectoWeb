@@ -11,7 +11,7 @@
       "id": "2",
       "ramoId": "2", 
       "autor": "CodeNovato",
-      "texto": "AED es muy difícil pero fundamental. Recomiendo estudiar los algoritmos paso a paso y practicar mucho.",
+      "texto": "Algoritmos es muy difícil pero fundamental. Recomiendo estudiar los algoritmos paso a paso y practicar mucho.",
       "fecha": "2024-03-10"
     },
     {
@@ -33,6 +33,13 @@
       "ramoId": "5",
       "autor": "DataScientist",
       "texto": "Minería de datos me gustó mucho! Combina programación con estadística de una forma muy práctica.",
+      "fecha": "2024-02-15"
+    },
+    {
+      "id": "6",
+      "ramoId": "4",
+      "autor": "CHater",
+      "texto": "Pss casi me convierte en industrial. Scala lover, C hater x siempre.",
       "fecha": "2024-02-15"
     }
   ]
