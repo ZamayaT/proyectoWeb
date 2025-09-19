@@ -1,6 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import { ramos } from './ramos';
 
 const ListaRamos = () => {
+  const navigate = useNavigate();
+
+  const handleRamoClick = (ramoId: string) => {
+    navigate(`/ramo/${ramoId}`);
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>
@@ -24,6 +31,7 @@ const ListaRamos = () => {
               cursor: 'pointer',
               transition: 'transform 0.2s, boxShadow 0.2s'
             }}
+            onClick={() => handleRamoClick(ramo.id)}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
@@ -39,7 +47,7 @@ const ListaRamos = () => {
               color: '#2563eb', 
               marginBottom: '10px' 
             }}>
-              {ramo.codigo}
+              {ramo.nombre}
             </h3>
             
             <p style={{ 
@@ -48,7 +56,7 @@ const ListaRamos = () => {
               marginBottom: '15px',
               lineHeight: '1.4'
             }}>
-              {ramo.nombre}
+              {ramo.codigo}
             </p>
             
             <div style={{ 
