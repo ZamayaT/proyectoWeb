@@ -3,6 +3,8 @@ import ListaRamos from './ListaRamos';
 import DetalleRamo from './DetalleRamo';
 import './App.css';
 
+// Para correr, npm run dev en frontend y npx json-server --port 3001 db.json
+
 function App() {
   return (
     <Router>

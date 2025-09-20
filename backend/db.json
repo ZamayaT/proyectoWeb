@@ -41,6 +41,13 @@
       "autor": "CHater",
       "texto": "Pss casi me convierte en industrial. Scala lover, C hater x siempre.",
       "fecha": "2024-02-15"
+    },
+    {
+      "id": "7",
+      "ramoId": "6",
+      "autor": "CLover",
+      "texto": "Mateu mi padre.",
+      "fecha": "2024-02-15"
     }
   ]
 }
