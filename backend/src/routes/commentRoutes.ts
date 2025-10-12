@@ -3,10 +3,10 @@ import { getCommentsByCourse, createComment } from "../controllers/commentContro
 
 const router = express.Router();
 
-// Obtiene todos los comentarios asociados a un ramo
-router.get("api/comment/:id", getCommentsByCourse);
+// Obtiene todos los comentarios asociados a un curso
+router.get("/course/:id", getCommentsByCourse);
 
 // Crea un comentario
-router.post("api/comment", createComment);
+router.post("/", createComment);
 
 export default router;

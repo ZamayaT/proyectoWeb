@@ -82,7 +82,7 @@ describe('Course API tests', () => {
     const courseToView = coursesAtStart[0];
 
     const resultCourse = await api
-      .get(`/api/courses/${courseToView.id}`)
+      .get(`/api/courses/${courseToView._id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
 

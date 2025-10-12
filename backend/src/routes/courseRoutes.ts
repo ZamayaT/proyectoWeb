@@ -4,12 +4,12 @@ import { getCourses, getCourseById, createCourse } from "../controllers/courseCo
 const router = express.Router();
 
 // Obtiene todos los ramos
-router.get("api/course", getCourses);
+router.get("/", getCourses);
 
 // Obtiene un ramo según su id
-router.get("api/course/:id", getCourseById);
+router.get("/:id", getCourseById);
 
-// Crea un usuario
-router.post("api/course", createCourse);
+// Crea un ramo
+router.post("/", createCourse);
 
 export default router;
