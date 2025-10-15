@@ -1,10 +1,18 @@
 import app from './app';
 import dotenv from 'dotenv';
+import config from './utils/config';
+import logger from './utils/logger';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+    }
+  }
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`);
 });

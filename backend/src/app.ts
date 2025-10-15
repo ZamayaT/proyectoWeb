@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import commentRouter from './routes/commentRoutes';
 import courseRouter from './routes/courseRoutes';
 import userRouter from './routes/userRoutes';
+import authRouter from './routes/authRoutes'
+import cookieParser from 'cookie-parser'
 
 dotenv.config();
 
@@ -12,6 +14,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.static('dist'));
+app.use(cookieParser()); 
 
 // Conectar a MongoDB
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
@@ -41,6 +44,7 @@ if (MONGODB_URI) {
 app.use('/api/comments', commentRouter);
 app.use('/api/courses', courseRouter);
 app.use('/api/users', userRouter);
+app.use('/api/auth', authRouter)
 
 // Middleware de errores
 app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
