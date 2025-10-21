@@ -7,7 +7,7 @@ type Credentials = {
 };
 
 const login = async (credentials: Credentials) => {
-    const response = await axios.post("/api/login", credentials);
+    const response = await axios.post("/api/auth/login", credentials);
 
     const csrfToken = response.headers["x-csrf-token"];
 
@@ -26,7 +26,7 @@ const register = async (credentials: Credentials) => {
 
 const restoreLogin = async () => {
     try {
-        const response = await axiosSecure.get("/api/login/me");
+        const response = await axiosSecure.get("/api/auth/login/me");
         return response.data; // Usuario logueado
     } catch {
         return null; // No logueado
@@ -34,7 +34,7 @@ const restoreLogin = async () => {
 };
 
 const logout = async () => {
-    await axios.post("/api/login/logout");
+    await axios.post("/api/auth/logout");
     localStorage.removeItem("csrfToken");
 };
 
