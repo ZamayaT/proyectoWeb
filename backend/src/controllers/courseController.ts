@@ -43,3 +43,18 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const deleteCourse = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const courseId = req.params.id;
+    const deletedCourse = await CourseModel.findByIdAndDelete(courseId);
+
+    if (!deletedCourse) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};

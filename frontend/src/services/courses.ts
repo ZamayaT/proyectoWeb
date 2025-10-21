@@ -14,7 +14,13 @@ const getCourse = (id: string) => {
   return request.then(response => response.data)
 }
 
+
+const deleteCourse = (id: string) => {
+  return axios.delete(`${baseUrl}/${id}`).then(res => res.data);
+};
+
 export default {
   getAll,
-  getCourse
+  getCourse,
+  deleteCourse
 };
