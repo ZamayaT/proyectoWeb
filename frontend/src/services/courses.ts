@@ -19,8 +19,13 @@ const deleteCourse = (id: string) => {
   return axios.delete(`${baseUrl}/${id}`).then(res => res.data);
 };
 
+const createCourse = (newCourse: Ramo) => {
+  return axios.post<Ramo>(baseUrl, newCourse).then(res => res.data);
+};
+
 export default {
   getAll,
   getCourse,
-  deleteCourse
+  deleteCourse,
+  createCourse
 };

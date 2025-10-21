@@ -1,47 +1,69 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { ramos } from './ramos';
-
-type Course = {
-  _id: string;
-  code: string;
-  name: string;
-  difficulty: number;
-  required: boolean;
-}
+import type { Ramo } from './Types';
+import ramosServices from "./services/courses"
 
 export default function Admin() {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<Ramo[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
+
   const [newName, setNewName] = useState('');
   const [newCode, setNewCode] = useState('');
 
   // Traemos los cursos estaticos por ahora
-  const getCourses = async () => {
+  const init = async () => {
     try {
+      const ramosList = await ramosServices.getAll();
+
       setLoading(true);
-      const mapped = ramos.map(r => ({
-        _id: r.id,
-        code: r.codigo,
-        name: r.nombre,
-        difficulty: r.dificultad,
+      const mapped = ramosList.map(r => ({
+        id: r.id,
+        code: r.code,
+        name: r.name,
+        difficulty: r.difficulty,
         required: false,
       }));
+
       setCourses(mapped);
     } finally { setLoading(false); }
   }
 
   useEffect(() => {
-    getCourses();
+    init();
   }, []);
 
   // Eliminar ramo (localmente por ahora)
   const deleteCourse = async (id: string) => {
-    setCourses(prev => prev.filter(c => c._id !== id));
-    setMessage('Ramo eliminado (localmente por ahora)');
+    try {
+      await ramosServices.deleteCourse(id);
+      alert("Curso eliminado correctamente ✅");
+      // refrescar lista
+      setCourses(prev => prev.filter(c => c.id !== id));
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+    }
   }
+
+  const addCourse = () => {
+    if (!newName.trim() || !newCode.trim()) { setMessage('Nombre y codigo requeridos'); return; }
+
+    const id = Date.now().toString();
+    const newCourse = { 
+      id: id,
+      code: newCode.trim(), 
+      name: newName.trim(), 
+      difficulty: 0, 
+      required: false 
+    };
+    ramosServices.createCourse(newCourse)
+    .then( course => {
+      setCourses(prev => [course, ...prev]);
+      setNewName(''); setNewCode(''); setShowAdd(false); setMessage('Ramo agregado');
+    })
+  }
+
 
   return (
     <div style={{ padding: 20, color: 'black', maxWidth: 800, margin: '0 auto' }}>
@@ -63,13 +85,7 @@ export default function Admin() {
               <input value={newCode} onChange={e => setNewCode(e.target.value)} style={{ marginLeft: 8, background:'#2563eb' }} />
             </div>
             <div>
-              <button onClick={() => {
-                if (!newName.trim() || !newCode.trim()) { setMessage('Nombre y codigo requeridos'); return; }
-                const id = Date.now().toString();
-                const newCourse = { _id: id, code: newCode.trim(), name: newName.trim(), difficulty: 0, required: false };
-                setCourses(prev => [newCourse, ...prev]);
-                setNewName(''); setNewCode(''); setShowAdd(false); setMessage('Ramo agregado (localmente por ahora)');
-              }} style={{background:'#2563eb'}}>Crear ramo</button>
+              <button onClick={() => addCourse()} style={{background:'#2563eb'}}>Crear ramo</button>
             </div>
           </div>
         )}
@@ -78,13 +94,13 @@ export default function Admin() {
             {courses.length === 0 && <p>No hay ramos</p>}
             <ul>
               {courses.map(c => (
-                <li key={c._id} style={{ marginBottom: 8 }}>
+                <li key={c.id} style={{ marginBottom: 8 }}>
                   <strong>{c.code}</strong> — {c.name} {' '}
-                  <button onClick={() => deleteCourse(c._id)} style={{ marginLeft: 8, background:'#2563eb' }}>Eliminar</button>
+                  <button onClick={() => deleteCourse(c.id)} style={{ marginLeft: 8, background:'#2563eb' }}>Eliminar</button>
                 </li>
               ))}
             </ul>
-            <button onClick={getCourses} style={{background:'#2563eb'}}>Refrescar ramos</button>
+            <button onClick={init} style={{background:'#2563eb'}}>Refrescar ramos</button>
           </div>
         )}
       </section>
