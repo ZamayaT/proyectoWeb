@@ -1,12 +1,25 @@
 import { useNavigate } from 'react-router-dom';
-import { ramos } from './ramos';
+import ramosServices from "./services/courses"
+import type { Ramo } from './Types';
+import { useEffect, useState } from 'react';
 
 const ListaRamos = () => {
+  const [ramos, setRamos] = useState<Ramo[]>([]);
   const navigate = useNavigate();
 
   const handleRamoClick = (ramoId: string) => {
     navigate(`/ramo/${ramoId}`);
   };
+
+  useEffect(() => {
+    const init = async () => {
+      await ramosServices.getAll().then((data) => {
+        console.log(data)
+        setRamos(data);
+      });
+    };
+    init();
+  }, []);
 
   return (
     <div style={{ padding: '20px' }}>
@@ -21,7 +34,7 @@ const ListaRamos = () => {
       }}>
         {ramos.map((ramo) => (
           <div 
-            key={ramo.id} 
+            key={ramo.code}
             style={{
               backgroundColor: 'white',
               border: '1px solid #ddd',
@@ -47,7 +60,7 @@ const ListaRamos = () => {
               color: '#2563eb', 
               marginBottom: '10px' 
             }}>
-              {ramo.nombre}
+              {ramo.name}
             </h3>
             
             <p style={{ 
@@ -56,7 +69,7 @@ const ListaRamos = () => {
               marginBottom: '15px',
               lineHeight: '1.4'
             }}>
-              {ramo.codigo}
+              {ramo.code}
             </p>
             
             <div style={{ 
@@ -64,7 +77,7 @@ const ListaRamos = () => {
               color: '#555',
               fontWeight: '600'
             }}>
-              Dificultad: {ramo.dificultad}/7
+              Dificultad: {ramo.difficulty}/7
             </div>
           </div>
         ))}
