@@ -4,12 +4,12 @@ import { createUser, getUsers, getUserById } from "../controllers/userController
 const router = express.Router();
 
 // Obtiene todos los usuarios
-router.get("api/user", getUsers);
+router.get("/", getUsers);
 
 // Obtiene un usuario según su id
-router.get("api/user/:id", getUserById);
+router.get("/:id", getUserById);
 
 // Crea un usuario
-router.post("api/user", createUser);
+router.post("/", createUser);
 
 export default router;

@@ -38,8 +38,8 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
         const user = new UserModel({
-            username,
-            passwordHash,
+            username : username,
+            password : passwordHash
         });
 
         const savedUser = await user.save();
