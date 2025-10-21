@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema} from 'mongoose';
 
 interface ICourse extends Document {
   code: string;
@@ -17,5 +17,16 @@ const courseSchema = new Schema<ICourse>({
 });
 
 const CourseModel = mongoose.model("Course", courseSchema);
+
+courseSchema.set("toJSON", {
+  transform: (
+    _,
+    returnedObject: { id?: string; _id?: mongoose.Types.ObjectId; __v?: number }
+  ) => {
+    returnedObject.id = returnedObject._id?.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 
 export { ICourse, CourseModel };
