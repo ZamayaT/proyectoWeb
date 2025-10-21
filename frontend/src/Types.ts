@@ -1,9 +1,9 @@
 // Tipo para los ramos del DCC
 export interface Ramo {
   id: string;
-  codigo: string;
-  nombre: string;
-  dificultad: number; // De 1 a 7
+  code: string;
+  name: string;
+  difficulty: number; // De 1 a 7
 }
 
 // Tipo para los comentarios sobre los ramos
