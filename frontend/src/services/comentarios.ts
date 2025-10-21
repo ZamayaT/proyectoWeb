@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Comentario } from './Types';
+import type { Comentario } from '../Types';
 
 const baseUrl = 'http://localhost:3001';
 
