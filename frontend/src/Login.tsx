@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import loginService from "./services/login"
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ export default function Login() {
     setMessage(null);
 
     try {
-        // Consultamos api/login con username y password para hacer login
+      // Consultamos api/login con username y password para hacer login
       const res = await axios.post('/api/login', { username, password });
       if (res.status === 200) {
         setMessage('Login exitoso');
@@ -30,13 +31,22 @@ export default function Login() {
   const handleRegister = async () => {
     setMessage(null);
     try {
-        // Intentamos crear usuario en /api/user con username y password
-      const res = await axios.post('/api/user', { username, password });
-      if (res.status === 201) {
+      // Intentamos crear usuario en /api/user con username y password
+      const newUser = {
+        username,
+        password
+      }
+      const res = await loginService.register(newUser)
+
+      if (res) {
         setMessage('Usuario registrado correctamente.');
       } else {
         setMessage('Error al registrar usuario');
       }
+
+      setUsername("");
+      setPassword("");
+
     } catch (err: any) {
         // Error de backend
       if (err.response && err.response.data && err.response.data.error) {

@@ -19,16 +19,10 @@ const login = async (credentials: Credentials) => {
 };
 
 const register = async (credentials: Credentials) => {
-    const response = await axios.post("/api/login", credentials);
-
-    const csrfToken = response.headers["x-csrf-token"];
-
-    if (csrfToken) {
-        localStorage.setItem("csrfToken", csrfToken);
-    }
-
+    const response = await axios.post("/api/users", credentials);
     return response.data;
 };
+
 
 const restoreLogin = async () => {
     try {

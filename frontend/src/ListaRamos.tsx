@@ -14,7 +14,6 @@ const ListaRamos = () => {
   useEffect(() => {
     const init = async () => {
       await ramosServices.getAll().then((data) => {
-        console.log(data)
         setRamos(data);
       });
     };
