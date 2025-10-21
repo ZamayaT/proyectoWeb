@@ -45,16 +45,7 @@ Esta aplicación permite a estudiantes del Departamento de Ciencias de la Comput
     npm run dev
 ```
 
-La aplicación estará disponible en:
-
-- Frontend → http://localhost:5173
-    - ruta `/` → Lista de Ramos
-    - ruta `/ramo/:id` → Detalle de ramo con comentarios 
-- API (JSON Server) → http://localhost:3001
-    - GET `/comentarios` → Obtiene todos los comentarios
-    - GET `/comentarios/:id` → Obtiene un comentario por ID
-
-🌐 URLs del proyecto
+ URLs del proyecto
 
 Frontend → http://localhost:5173
 
