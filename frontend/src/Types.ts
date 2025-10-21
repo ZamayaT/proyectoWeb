@@ -4,6 +4,7 @@ export interface Ramo {
   code: string;
   name: string;
   difficulty: number; // De 1 a 7
+  required : boolean;
 }
 
 // Tipo para los comentarios sobre los ramos
