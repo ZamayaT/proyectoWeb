@@ -8,12 +8,42 @@ Esta aplicación permite a estudiantes del Departamento de Ciencias de la Comput
 
 
 ## Instalación y ejecución
-1. Clonar el repositorio: `git clone git@github.com:ZamayaT/proyectoWeb.git`
-2. Ingresar a carpeta frontend: `cd proyectoWeb/frontend`
-3. Instalar dependencias: `npm install`
-4. Ingresar a carpeta backend: `cd ../backend`
-5. Levantar JSON Server: `npx json-server --watch db.json --port 3001`
-6. Levantar la app en modo desarrollo: `npm run dev`
+1. Clonar el repositorio: 
+```bash
+    git clone git@github.com:ZamayaT/proyectoWeb.git`
+```
+2. Instalar dependencias del frontend
+```bash
+    cd proyectoWeb/frontend
+    npm install 
+```
+
+3. Instalar dependencias del backend
+```bash
+    cd ../backend
+    npm install
+```
+
+4. Configurar variables de entorno(cambiar nombre)
+```bash
+    .env.example -> .env
+```
+
+5. (Opcional pero recomendado) Poblar la base de datos con ramos de ejemplo: 
+```bash
+    npm run seed
+```
+6. Levantar el backend
+```bash
+    npm run dev # npm start (en produccion)
+    
+```
+
+7. Levantar el frontend
+```bash
+    cd ../frontend
+    npm run dev
+```
 
 La aplicación estará disponible en:
 
@@ -24,10 +54,45 @@ La aplicación estará disponible en:
     - GET `/comentarios` → Obtiene todos los comentarios
     - GET `/comentarios/:id` → Obtiene un comentario por ID
 
+🌐 URLs del proyecto
+
+Frontend → http://localhost:5173
+
+- / → Lista de ramos
+
+- /ramo/:id → Detalle del ramo con comentarios
+
+- /admin → Administrar ramos (crear y eliminar)
+
+- /login → login, logout y register de usuarios
+
+Backend API → http://localhost:3001/api
+
+- GET /api/courses → Obtiene todos los ramos
+
+- GET /api/courses/:id → Obtiene un ramo por ID
+
+- POST /api/courses → Crea un nuevo ramo
+
+- DELETE /api/courses/:id → Elimina un ramo
+
+- POST /api/auth/login → Inicia sesión de usuario
+
+- POST /api/auth/logout → Cerrar sesión de usuario
+
+- POST /api/users → Registra un nuevo usuario
 
 
 
-## Scripts disponibles
+
+## Scripts disponibles (backend)
+```bash
+npm run dev      # Levanta el servidor en modo desarrollo con nodemon
+npm start        # Levanta el servidor en modo producción
+npm run seed     # Poblado inicial de la base de datos con ramos
+```
+
+## Scripts disponibles (backend)
 ```bash
 npm run dev      # Levanta la app en modo desarrollo
 npm run build    # Genera la build de producción
