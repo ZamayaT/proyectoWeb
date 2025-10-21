@@ -23,3 +23,10 @@ export interface NuevoComentario {
   texto: string;
   fecha: string;
 }
+
+// Tipo para crear un comentario nuevo (sin id)
+export interface User {
+  id : string;
+  username: string;
+  email: string;
+}
