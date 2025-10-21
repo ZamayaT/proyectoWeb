@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ramos } from './ramos';
 import type { Comentario } from './Types';
-import comentariosService from './comentariosService';
+import comentariosService from './services/comentarios';
+import ramosServices from "./services/courses"
+import type { Ramo } from "./Types"
 
 const DetalleRamo = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,25 +12,34 @@ const DetalleRamo = () => {
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [ramo, setRamo] = useState<Ramo>();
   
   // Buscar el ramo por id
-  const ramo = ramos.find(r => r.id === id);
+  // const ramo = ramos.find(r => r.id === id);
 
   // Cargar comentarios cuando cambie el id
   useEffect(() => {
     const loadComentarios = async () => {
-      if (!id) return;
-      
-      try {
-        setLoading(true);
-        setError('');
-        const comentariosData = await comentariosService.getComentariosByRamo(id);
-        setComentarios(comentariosData);
-      } catch (err) {
-        setError('Error al cargar comentarios');
-        console.error('Error:', err);
-      } finally {
-        setLoading(false);
+
+      ramosServices.getCourse(id || "").then((data) => {
+        setRamo(data);
+      });
+
+      if (!ramo) {
+        return;
+      }
+      else{
+        try {
+          setLoading(true);
+          setError('');
+          const comentariosData = await comentariosService.getComentariosByRamo(ramo?.id);
+          setComentarios(comentariosData);
+        } catch (err) {
+          setError('Error al cargar comentarios');
+          console.error('Error:', err);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
@@ -78,7 +88,7 @@ const DetalleRamo = () => {
           marginBottom: '10px',
           color: '#333'
         }}>
-          {ramo.nombre}
+          {ramo.name}
         </h1>
         
         <p style={{ 
@@ -87,7 +97,7 @@ const DetalleRamo = () => {
           fontWeight: '600',
           marginBottom: '20px'
         }}>
-          {ramo.codigo}
+          {ramo.code}
         </p>
 
         <div style={{ marginBottom: '15px' }}>
@@ -104,14 +114,14 @@ const DetalleRamo = () => {
                   style={{
                     width: '20px',
                     height: '20px',
-                    backgroundColor: index < ramo.dificultad ? '#2563eb' : '#e5e7eb',
+                    backgroundColor: index < ramo.difficulty ? '#2563eb' : '#e5e7eb',
                     borderRadius: '3px'
                   }}
                 />
               ))}
             </div>
             <span style={{ fontWeight: '600', color: '#333' }}>
-              {ramo.dificultad}/7
+              {ramo.difficulty}/7
             </span>
           </div>
         </div>
