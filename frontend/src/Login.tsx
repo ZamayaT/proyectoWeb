@@ -1,11 +1,23 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+// import axios from 'axios';
 import loginService from "./services/login"
+import type {User} from "./Types"
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => { 
+    const init = async () => {
+      const storedUser = await loginService.restoreLogin()
+      if (storedUser) {
+        setUser(storedUser);
+      }
+    }
+    init()
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,12 +25,20 @@ export default function Login() {
 
     try {
       // Consultamos api/login con username y password para hacer login
-      const res = await axios.post('/api/login', { username, password });
-      if (res.status === 200) {
+      const user = {
+        username,
+        password
+      }
+      const res = await loginService.login(user)
+
+      if (res) {
         setMessage('Login exitoso');
+        setUser(res)
       } else {
         setMessage('Error en el login');
       }
+      setUsername("");
+      setPassword("");
     } catch (err: any) {
       if (err.response.status === 404) {
         setMessage('No se encuentra el endpoint /api/login');
@@ -57,24 +77,48 @@ export default function Login() {
     }
   }
 
+  const handleLogout = async () => {
+    await loginService.logout()
+    setUser(null);
+    setUsername('');
+    setPassword('');
+    setMessage('Sesión cerrada 👋');
+  };
+
   return (
-    <div style={{ maxWidth: 480, margin: '20px auto', padding: 20, background: 'white', borderRadius: 8, color: 'black' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label>Usuario</label>
-          <input value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: 8, background: "#2563eb" }} />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Contraseña</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: 8, background: "#2563eb" }} />
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="submit" style={{ padding: '8px 12px', background: '#2563eb' }}>Entrar</button>
-          <button type="button" onClick={handleRegister} style={{ padding: '8px 12px', background:'#2563eb' }}>Registrar</button>
-        </div>
-      </form>
-      {message && <p style={{ marginTop: 12, color: 'black' }}>{message}</p>}
+    <>
+      <div style={{ maxWidth: 480, margin: '20px auto', padding: 20, background: 'white', borderRadius: 8, color: 'black' }}>
+      {!user ? (
+        <>
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: 12 }}>
+            <label>Usuario</label>
+            <input value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: 8, background: "#2563eb" }} />
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <label>Contraseña</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: 8, background: "#2563eb" }} />
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="submit" style={{ padding: '8px 12px', background: '#2563eb' }}>Entrar</button>
+            <button type="button" onClick={handleRegister} style={{ padding: '8px 12px', background:'#2563eb' }}>Registrar</button>
+          </div>
+        </form>
+        {message && <p style={{ marginTop: 12, color: 'black' }}>{message}</p>}
+        </>
+      ) : (
+        <>
+          <h2>Bienvenido 👋</h2>
+          <p>Usuario  <b>{user.username || 'Usuario activo'}</b> logueado</p>
+          <br></br>
+          <button onClick={handleLogout} style={{ padding: '8px 12px', background: 'red', color: 'white' }}>
+            Logout
+          </button>
+        </>
+      )
+    }
     </div>
+    </>
   )
 }
