@@ -1,9 +1,10 @@
-import app from './app';
 import dotenv from 'dotenv';
+dotenv.config();
+
+import app from "./app";
 import config from './utils/config';
 import logger from './utils/logger';
 
-dotenv.config();
 
 declare global {
   namespace Express {
