@@ -1,4 +1,4 @@
-import type { Ramo } from './Types';
+import type { Ramo } from './Types/Types';
 
 // Datos estáticos de los ramos DCC
 export const ramos: Ramo[] = [

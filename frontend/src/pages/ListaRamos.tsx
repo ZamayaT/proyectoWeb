@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import ramosServices from "./services/courses"
-import type { Ramo } from './Types';
+import ramosServices from "../services/courses"
+import type { Ramo } from '../Types/Types';
 import { useEffect, useState } from 'react';
 
 const ListaRamos = () => {

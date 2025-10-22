@@ -1,6 +1,6 @@
 import axios from "axios";
 // import axiosSecure from "../utils/axiosSecure";
-import type {Ramo} from "../Types";
+import type {Ramo} from "../Types/Types";
 
 const baseUrl = '/api/courses';
 

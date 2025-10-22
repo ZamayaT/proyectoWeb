@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 // import axios from 'axios';
-import loginService from "./services/login"
-import type {User} from "./Types"
+import loginService from "../services/login"
+import type {User} from "../Types/Types"
 
 export default function Login() {
   const [username, setUsername] = useState('');

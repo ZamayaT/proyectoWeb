@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import ListaRamos from './ListaRamos';
-import DetalleRamo from './DetalleRamo';
-import Login from './Login';
-import Admin from './Admin';
+import ListaRamos from './pages/ListaRamos';
+import DetalleRamo from './pages/DetalleRamo';
+import Login from './pages/Login';
+import Admin from './pages/Admin';
 import './App.css';
 
 // Para correr, npm run dev en frontend y npx json-server --port 3001 db.json

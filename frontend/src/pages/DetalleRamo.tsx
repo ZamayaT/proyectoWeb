@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import type { Comentario } from './Types';
-import comentariosService from './services/comentarios';
-import ramosServices from "./services/courses"
-import type { Ramo } from "./Types"
+import type { Comentario } from '../Types/Types';
+import comentariosService from '../services/comentarios';
+import ramosServices from "../services/courses"
+import type { Ramo } from "../Types/Types"
 
 const DetalleRamo = () => {
   const { id } = useParams<{ id: string }>();

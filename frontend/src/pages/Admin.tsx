@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Ramo } from './Types';
-import ramosServices from "./services/courses"
+import type { Ramo } from '../Types/Types';
+import ramosServices from "../services/courses"
 
 export default function Admin() {
   const [courses, setCourses] = useState<Ramo[]>([]);
