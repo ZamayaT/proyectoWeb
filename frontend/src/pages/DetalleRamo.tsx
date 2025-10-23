@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import type { Comentario } from '../Types/Types';
 import comentariosService from '../services/comentarios';
 import ramosServices from "../services/courses"
-import type { Ramo } from "../Types/Types"
+import type { Ramo, User } from "../Types/Types"
+import loginService from "../services/login"
 
 const DetalleRamo = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,26 +14,28 @@ const DetalleRamo = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [ramo, setRamo] = useState<Ramo>();
-  
-  // Buscar el ramo por id
-  // const ramo = ramos.find(r => r.id === id);
 
+  // Estados para nuevo comentario
+  const [nuevoTexto, setNuevoTexto] = useState<string>('');
+
+  // User
+  const [user, setUser] = useState<User | null>(null);
+  
   // Cargar comentarios cuando cambie el id
   useEffect(() => {
     const loadComentarios = async () => {
 
-      ramosServices.getCourse(id || "").then((data) => {
-        setRamo(data);
-      });
-
-      if (!ramo) {
+      const data = await ramosServices.getCourse(id || "")
+      
+      if (!data) {
         return;
       }
       else{
         try {
+          setRamo(data);
           setLoading(true);
           setError('');
-          const comentariosData = await comentariosService.getComentariosByRamo(ramo?.id);
+          const comentariosData = await comentariosService.getComentariosByRamo(data.id);
           setComentarios(comentariosData);
         } catch (err) {
           setError('Error al cargar comentarios');
@@ -43,8 +46,40 @@ const DetalleRamo = () => {
       }
     };
 
+    const initUser = async () => {
+      const storedUser = await loginService.restoreLogin()
+      if (storedUser) {
+        setUser(storedUser);
+      }
+    }
+
+    initUser();
     loadComentarios();
   }, [id]);
+
+  const handleAddComentario = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!nuevoTexto.trim() || !ramo) return;
+
+    // fecha: new Date().toLocaleDateString('es-CL'),
+    const nuevoComentario = {
+      author: user?.id || null,
+      content: nuevoTexto,
+      course: ramo.id
+    };
+
+    console.log(nuevoComentario);
+
+    try {
+      const creado = await comentariosService.createComment(nuevoComentario);
+
+      setComentarios([creado, ...comentarios]);
+      setNuevoTexto('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Si no se encuentra el ramo
   if (!ramo) {
@@ -127,6 +162,64 @@ const DetalleRamo = () => {
         </div>
       </div>
 
+      {/* Sección para crear comentario */}
+      <div style={{
+        backgroundColor: 'white',
+        border: '1px solid #ddd',
+        borderRadius: '8px',
+        padding: '30px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        marginBottom: '30px'
+        }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
+            Agregar un nuevo comentario
+          </h2>
+
+          <form onSubmit={handleAddComentario}>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', color: '#374151', fontWeight: '600', marginBottom: '8px' }}>
+                Tu comentario
+              </label>
+              <textarea
+                value={nuevoTexto}
+                onChange={(e) => setNuevoTexto(e.target.value)}
+                placeholder="Comparte tu experiencia sobre este ramo..."
+                rows={4}
+                required
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '6px',
+                  fontSize: '1rem',
+                  color: '#1e293b',
+                  resize: 'vertical'
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              style={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                fontWeight: '600',
+                padding: '10px 16px',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                transition: 'background-color 0.2s ease'
+              }}
+              onMouseOver={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1d4ed8')}
+              onMouseOut={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#2563eb')}
+            >
+              Publicar comentario
+            </button>
+          </form>
+      </div>
+
       {/* Sección de comentarios */}
       <div style={{
         backgroundColor: 'white',
@@ -134,7 +227,7 @@ const DetalleRamo = () => {
         borderRadius: '8px',
         padding: '30px',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}>
+        }}>
         <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
           Comentarios de estudiantes ({comentarios.length})
         </h2>
@@ -177,14 +270,16 @@ const DetalleRamo = () => {
                   marginBottom: '10px' 
                 }}>
                   <span style={{ fontWeight: '600', color: '#1e293b' }}>
-                    {comentario.autor}
+                    {comentario.author?.username || "Anónimo"}
                   </span>
                   <span style={{ fontSize: '0.9rem', color: '#64748b' }}>
-                    {comentario.fecha}
+                    {new Date(comentario.createdAt).getDate().toString().padStart(2, '0')}-
+                    {(new Date(comentario.createdAt).getMonth() + 1).toString().padStart(2, '0')}-
+                    {new Date(comentario.createdAt).getFullYear()}
                   </span>
                 </div>
                 <p style={{ color: '#374151', lineHeight: '1.6' }}>
-                  {comentario.texto}
+                  {comentario.content}
                 </p>
               </div>
             ))}

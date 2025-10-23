@@ -10,10 +10,12 @@ export interface Ramo {
 // Tipo para los comentarios sobre los ramos
 export interface Comentario {
   id: string;
-  ramoId: string;
-  autor: string;
-  texto: string;
-  fecha: string; // Formato: "YYYY-MM-DD"
+  course: string ;
+  author: User | null;
+  content: string;
+  votes: number;
+  createdAt: string
+  updatedAt: string // Formato: "YYYY-MM-DD"
 }
 
 // Tipo para crear un comentario nuevo (sin id)
@@ -24,7 +26,7 @@ export interface NuevoComentario {
   fecha: string;
 }
 
-// Tipo para crear un comentario nuevo (sin id)
+// Tipo para usuarios
 export interface User {
   id : string;
   username: string;
