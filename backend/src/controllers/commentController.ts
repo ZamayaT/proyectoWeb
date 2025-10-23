@@ -9,7 +9,7 @@ export const getCommentsByCourse = async (req: Request, res: Response, next: Nex
     try {
         // Obtenemos el id del ramo asociado a los comentarios buscados
         const courseId = req.params.id;
-        const comments = await CommentModel.find({ course: courseId });
+        const comments = await CommentModel.find({ course: courseId }).populate('author', {username:1})
 
         res.json(comments);
 
@@ -25,12 +25,14 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
 
         // Si se quiere mantener el author anónimo, se puede mandar como nulo
         const comment = new CommentModel({
-            author,
-            course,
-            content,
+            author : author,
+            course : course,
+            content : content
         });
 
         const savedComment = await comment.save();
+
+        await savedComment.populate('author', 'username');
 
         res.status(201).json(savedComment);
         
