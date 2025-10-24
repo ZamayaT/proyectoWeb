@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import config from '../utils/config';
 import jwt from "jsonwebtoken"
+import { UserModel } from '../models/user';
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   const authReq = req;
@@ -21,4 +22,18 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       res.status(401).json({ error: "invalid token" });
     }
   }
+};
+
+// Middleware de autorización por rol
+export const authorizeRole = (roles: string[]) => {
+  return async (req: any, res: Response, next: NextFunction) => {
+    const user = await UserModel.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    if (!roles.includes(user.role)) {
+      return res.status(403).json({ message: "Acceso denegado" });
+    }
+
+    next();
+  };
 };
