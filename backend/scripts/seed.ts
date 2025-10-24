@@ -27,7 +27,7 @@ const seed = async () => {
 
     const admin = new UserModel({
         username: config.ADMIN_USER,
-        email: config.ADMIN_EMAIL,
+        role: config.ROLES.ADMIN,
         password: passwordHash,
     });
 

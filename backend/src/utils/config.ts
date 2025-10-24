@@ -19,5 +19,10 @@ const ADMIN_USER = process.env.ADMIN_USER || "admin"
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123"
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com"
 
+const ROLES = {
+  ADMIN: 'admin',
+  USER: 'user'
+}
 
-export default { PORT, HOST, MONGODB_URI, JWT_SECRET, MONGODB_DBNAME, ADMIN_USER, ADMIN_PASSWORD, ADMIN_EMAIL}
+
+export default { PORT, HOST, MONGODB_URI, JWT_SECRET, MONGODB_DBNAME, ADMIN_USER, ADMIN_PASSWORD, ADMIN_EMAIL, ROLES}

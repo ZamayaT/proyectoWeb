@@ -6,9 +6,6 @@ import courseRouter from './routes/courseRoutes';
 import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes'
 import cookieParser from 'cookie-parser'
-import config from './utils/config';
-import { UserModel } from './models/user';
-import bcrypt from "bcrypt"
 
 dotenv.config();
 
