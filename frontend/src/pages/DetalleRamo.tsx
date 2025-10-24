@@ -24,7 +24,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
   const [nuevaDificultad, setNuevaDificultad] = useState<number>(0);
 
   // User
-  const { user, setUser} = props;
+  const { user} = props;
   
   // Cargar comentarios cuando cambie el id
   useEffect(() => {

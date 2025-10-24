@@ -24,6 +24,7 @@ export default function Admin() {
         name: r.name,
         difficulty: r.difficulty,
         required: false,
+        totalComments: r.totalComments
       }));
 
       setCourses(mapped);
@@ -55,7 +56,8 @@ export default function Admin() {
       code: newCode.trim(), 
       name: newName.trim(), 
       difficulty: 0, 
-      required: false 
+      required: false,
+      totalComments: 0,
     };
     ramosServices.createCourse(newCourse)
     .then( course => {

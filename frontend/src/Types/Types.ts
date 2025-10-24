@@ -4,7 +4,7 @@ export interface Ramo {
   code: string;
   name: string;
   difficulty: number; // De 1 a 7
-  totalCommnets: number;
+  totalComments: number;
   required : boolean;
 }
 
