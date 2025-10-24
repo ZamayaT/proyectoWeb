@@ -20,19 +20,20 @@ export const getCommentsByCourse = async (req: Request, res: Response, next: Nex
 
 export const createComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-        const { author, course, content } = req.body;
+        const { author, course, content, votes } = req.body;
 
         // Si se quiere mantener el author anónimo, se puede mandar como nulo
         const comment = new CommentModel({
             author : author,
             course : course,
-            content : content
+            content : content,
+            votes : votes
         });
 
         const savedComment = await comment.save();
 
-        await savedComment.populate('author', 'username');
+        await savedComment.populate("author", {username:1});
+        await savedComment.populate("course");
 
         res.status(201).json(savedComment);
         
@@ -40,3 +41,19 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 };
+
+export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const commentId = req.params.id;
+        const deletedComment = await CommentModel.findByIdAndDelete(commentId);
+
+        if (!deletedComment) {
+            return res.status(404).json({ error: "Comment not found" });
+        }
+
+        res.status(204).end();
+    } catch (error) {
+        next(error);
+    }
+
+}
