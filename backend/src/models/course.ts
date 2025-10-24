@@ -5,12 +5,14 @@ interface ICourse extends Document {
   name: string;
   difficulty: number;
   required: boolean;
+  totalCommnets: number;
 }
 
 const courseSchema = new Schema<ICourse>({
   code: { type: String, required: true, unique: true },
   name: { type: String, required: true },
-  difficulty: { type: Number, required: true },
+  difficulty: { type: Number, default : 0, required: true },
+  totalCommnets: { type : Number, default : 0},
   required: { type: Boolean, required: true }
 }, {
   timestamps: true,

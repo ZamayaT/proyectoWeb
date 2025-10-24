@@ -4,13 +4,14 @@ export interface Ramo {
   code: string;
   name: string;
   difficulty: number; // De 1 a 7
+  totalCommnets: number;
   required : boolean;
 }
 
 // Tipo para los comentarios sobre los ramos
 export interface Comentario {
   id: string;
-  course: string ;
+  course: Ramo;
   author: User | null;
   content: string;
   votes: number;
