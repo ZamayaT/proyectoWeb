@@ -20,6 +20,19 @@ const ListaRamos = () => {
     init();
   }, []);
 
+  const getLabelForLevel = (level: number) => {
+    const labels = [
+      'Muy fácil',
+      'Fácil',
+      'Algo fácil',
+      'Moderado',
+      'Algo difícil',
+      'Difícil',
+      'Muy difícil',
+    ];
+    return labels[level - 1] || '';
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>
@@ -71,13 +84,20 @@ const ListaRamos = () => {
               {ramo.code}
             </p>
             
-            <div style={{ 
-              fontSize: '0.9rem', 
-              color: '#555',
-              fontWeight: '600'
-            }}>
-              Dificultad: {ramo.difficulty}/7
-            </div>
+            {ramo.difficulty === 0 ? (
+              <p style={{ color: '#666', fontStyle: 'italic' }}>
+                Aún no hay comentarios para este ramo. ¡Sé el primero en compartir tu experiencia!
+              </p>
+            ) : (
+              <div style={{ 
+                fontSize: '0.9rem', 
+                color: '#555',
+                fontWeight: '600'
+              }}>
+                Dificultad: {ramo.difficulty.toFixed()}/7 - {getLabelForLevel(Number(ramo.difficulty.toFixed()))}
+              </div>
+            )
+            }
           </div>
         ))}
       </div>

@@ -4,7 +4,6 @@ import type { Comentario } from '../Types/Types';
 import comentariosService from '../services/comentarios';
 import ramosServices from "../services/courses"
 import type { Ramo, User } from "../Types/Types"
-import loginService from "../services/login"
 
 interface propDetalleRamo {
   setUser: (user: User | null) => void,
@@ -22,6 +21,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
   // Estados para nuevo comentario
   const [nuevoTexto, setNuevoTexto] = useState<string>('');
+  const [nuevaDificultad, setNuevaDificultad] = useState<number>(0);
 
   // User
   const { user, setUser} = props;
@@ -58,23 +58,58 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
     if (!nuevoTexto.trim() || !ramo) return;
 
-    // fecha: new Date().toLocaleDateString('es-CL'),
+    if (nuevaDificultad === 0) {
+      alert("Por favor, selecciona una dificultad antes de publicar tu comentario.");
+      return;
+    }
+
     const nuevoComentario = {
       author: user?.id || null,
       content: nuevoTexto,
-      course: ramo.id
+      course: ramo.id,
+      votes: nuevaDificultad
     };
-
-    console.log(nuevoComentario);
 
     try {
       const creado = await comentariosService.createComment(nuevoComentario);
 
+      console.log('Comentario creado:', creado);
+
+      setRamo(creado.course as Ramo);
       setComentarios([creado, ...comentarios]);
+      setNuevaDificultad(0);
       setNuevoTexto('');
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const [hover, setHover] = useState<number | null>(null);
+
+  const getColorForLevel = (level: number) => {
+    const colors = [
+      '#bae6fd', // 1: celeste claro
+      '#7dd3fc',
+      '#38bdf8',
+      '#facc15', // 4: amarillo intermedio
+      '#fb923c',
+      '#f87171',
+      '#dc2626', // 7: rojo intenso
+    ];
+    return colors[level - 1] || '#e5e7eb';
+  };
+
+  const getLabelForLevel = (level: number) => {
+    const labels = [
+      'Muy fácil',
+      'Fácil',
+      'Algo fácil',
+      'Moderado',
+      'Algo difícil',
+      'Difícil',
+      'Muy difícil',
+    ];
+    return labels[level - 1] || '';
   };
 
   // Si no se encuentra el ramo
@@ -133,7 +168,10 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
         <div style={{ marginBottom: '15px' }}>
           <h3 style={{ fontSize: '1.1rem', marginBottom: '10px', color: '#333' }}>
-            Nivel de Dificultad
+            Nivel de Dificultad 
+            {ramo.difficulty > 0 && (
+                <span> ({ramo.difficulty.toFixed()}/7)</span>
+              )}
           </h3>
           
           {/* Barra visual de dificultad */}
@@ -145,34 +183,112 @@ const DetalleRamo = (props : propDetalleRamo) => {
                   style={{
                     width: '20px',
                     height: '20px',
-                    backgroundColor: index < ramo.difficulty ? '#2563eb' : '#e5e7eb',
+                    backgroundColor: index < ramo.difficulty ? getColorForLevel(Number(ramo.difficulty.toFixed())) : '#e5e7eb',
                     borderRadius: '3px'
                   }}
                 />
               ))}
             </div>
-            <span style={{ fontWeight: '600', color: '#333' }}>
-              {ramo.difficulty}/7
-            </span>
+                <span
+                  style={{
+                    fontWeight: '600',
+                    color: getColorForLevel(Number(ramo.difficulty.toFixed())), 
+                    fontSize: '1rem',
+                    minWidth: '110px',
+                    textAlign: 'left',
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {ramo.difficulty > 0 ? getLabelForLevel(Number(ramo.difficulty.toFixed())) : 'Sin seleccionar'}
+                </span>
+              </div>
           </div>
         </div>
-      </div>
 
-      {/* Sección para crear comentario */}
-      <div style={{
-        backgroundColor: 'white',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '30px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        marginBottom: '30px'
-        }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
-            Agregar un nuevo comentario
-          </h2>
+        {/* Sección para crear comentario */}
+        <div style={{
+          backgroundColor: 'white',
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          padding: '30px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          marginBottom: '30px'
+          }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
+              Agregar un nuevo comentario
+            </h2>
 
-          <form onSubmit={handleAddComentario}>
+            <form onSubmit={handleAddComentario}>
 
+            {/* Selector de puntuación */}
+            <div style={{ marginBottom: '20px' }}>
+              <label
+                style={{
+                  display: 'block',
+                  color: '#374151',
+                  fontWeight: '600',
+                  marginBottom: '10px',
+                }}
+              >
+                Dificultad percibida <span style={{ color: 'red' }}>*</span>
+              </label>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {[...Array(7)].map((_, index) => {
+                    const level = index + 1;
+                    const isActive = level <= (hover || nuevaDificultad);
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => setNuevaDificultad(level)}
+                        onMouseEnter={() => setHover(level)}
+                        onMouseLeave={() => setHover(null)}
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '4px',
+                          backgroundColor: isActive ? getColorForLevel(hover || nuevaDificultad || 1) : '#e5e7eb',
+                          transition: 'transform 0.2s ease, background-color 0.2s ease',
+                          cursor: 'pointer',
+                          transform: isActive && hover === level ? 'scale(1.1)' : 'scale(1)',
+                          boxShadow: isActive
+                            ? '0 0 6px rgba(0,0,0,0.1)'
+                            : 'inset 0 0 2px rgba(0,0,0,0.1)',
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
+                <span
+                  style={{
+                    fontWeight: '600',
+                    color: getColorForLevel(hover || nuevaDificultad || 1),
+                    fontSize: '1rem',
+                    minWidth: '110px',
+                    textAlign: 'left',
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {nuevaDificultad > 0 ? getLabelForLevel(nuevaDificultad) : 'Sin seleccionar'}
+                </span>
+              </div>
+
+              {nuevaDificultad > 0 && (
+                <p
+                  style={{
+                    marginTop: '6px',
+                    color: '#555',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  Nivel seleccionado: {nuevaDificultad}/7
+                </p>
+              )}
+            </div>
+
+            {/* Selector de contenido */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', color: '#374151', fontWeight: '600', marginBottom: '8px' }}>
                 Tu comentario
@@ -277,6 +393,14 @@ const DetalleRamo = (props : propDetalleRamo) => {
                 <p style={{ color: '#374151', lineHeight: '1.6' }}>
                   {comentario.content}
                 </p>
+
+                {comentario.votes > 0 && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontWeight: '600', color: getColorForLevel(comentario.votes), fontSize: '0.9rem' }}>
+                      {getLabelForLevel(comentario.votes)} ({comentario.votes}/7)
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
