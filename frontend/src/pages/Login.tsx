@@ -3,21 +3,17 @@ import { useState, useEffect } from 'react';
 import loginService from "../services/login"
 import type {User} from "../Types/Types"
 
-export default function Login() {
+interface propLogin {
+  setUser: (user: User | null) => void,
+  user : User | null,
+}
+
+export default function Login( props : propLogin) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => { 
-    const init = async () => {
-      const storedUser = await loginService.restoreLogin()
-      if (storedUser) {
-        setUser(storedUser);
-      }
-    }
-    init()
-  }, []);
+  const { setUser, user} = props;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,11 +21,11 @@ export default function Login() {
 
     try {
       // Consultamos api/login con username y password para hacer login
-      const user = {
+      const loginUser = {
         username,
         password
       }
-      const res = await loginService.login(user)
+      const res = await loginService.login(loginUser)
 
       if (res) {
         setMessage('Login exitoso');

@@ -4,10 +4,25 @@ import DetalleRamo from './pages/DetalleRamo';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './App.css';
+import { useEffect, useState } from 'react';
+import loginService from "./services/login"
+import type { User } from "./Types/Types"
 
 // Para correr, npm run dev en frontend y npx json-server --port 3001 db.json
 
 function App() {
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => { 
+    const init = async () => {
+      const storedUser = await loginService.restoreLogin()
+      if (storedUser) {
+        setUser(storedUser);
+      }
+    }
+    init()
+  }, []);
+
   return (
     <Router>
       <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', width: '100%' }}>
@@ -32,7 +47,9 @@ function App() {
           <nav style={{ marginTop: '12px' }}>
             <Link to="/" style={{ color: 'white', marginRight: '12px', textDecoration: 'underline' }}>Inicio</Link>
             <Link to="/login" style={{ color: 'white', textDecoration: 'underline' }}>Login</Link>
-            <Link to="/admin" style={{ color: 'white', marginLeft: '12px', textDecoration: 'underline' }}>Admin</Link>
+            {(user?.role === "admin") && 
+              <Link to="/admin" style={{ color: 'white', marginLeft: '12px', textDecoration: 'underline' }}>Admin</Link>
+            }
           </nav>
         </header>
         
@@ -40,7 +57,7 @@ function App() {
           <Routes>
             <Route path="/" element={<ListaRamos />} />
             <Route path="/ramo/:id" element={<DetalleRamo />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login setUser={ (u) => setUser(u)} user={user}/>} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
