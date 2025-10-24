@@ -56,7 +56,7 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<ListaRamos />} />
-            <Route path="/ramo/:id" element={<DetalleRamo />} />
+            <Route path="/ramo/:id" element={<DetalleRamo setUser={ (u) => setUser(u)} user={user}/>} />
             <Route path="/login" element={<Login setUser={ (u) => setUser(u)} user={user}/>} />
             <Route path="/admin" element={<Admin />} />
           </Routes>

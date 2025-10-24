@@ -6,7 +6,12 @@ import ramosServices from "../services/courses"
 import type { Ramo, User } from "../Types/Types"
 import loginService from "../services/login"
 
-const DetalleRamo = () => {
+interface propDetalleRamo {
+  setUser: (user: User | null) => void,
+  user : User | null,
+}
+
+const DetalleRamo = (props : propDetalleRamo) => {
   const { id } = useParams<{ id: string }>();
   
   // Estados para comentarios
@@ -19,7 +24,7 @@ const DetalleRamo = () => {
   const [nuevoTexto, setNuevoTexto] = useState<string>('');
 
   // User
-  const [user, setUser] = useState<User | null>(null);
+  const { user, setUser} = props;
   
   // Cargar comentarios cuando cambie el id
   useEffect(() => {
@@ -45,15 +50,6 @@ const DetalleRamo = () => {
         }
       }
     };
-
-    const initUser = async () => {
-      const storedUser = await loginService.restoreLogin()
-      if (storedUser) {
-        setUser(storedUser);
-      }
-    }
-
-    initUser();
     loadComentarios();
   }, [id]);
 
