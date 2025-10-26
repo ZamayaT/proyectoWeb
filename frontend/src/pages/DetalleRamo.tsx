@@ -20,6 +20,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
   const [ramo, setRamo] = useState<Ramo>();
 
   // Estados para nuevo comentario
+  const [anonimo, setAnonimo] = useState<boolean>(false);
   const [nuevoTexto, setNuevoTexto] = useState<string>('');
   const [nuevaDificultad, setNuevaDificultad] = useState<number>(0);
 
@@ -56,7 +57,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
   const handleAddComentario = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!nuevoTexto.trim() || !ramo) return;
+    if (!ramo) return;
 
     if (nuevaDificultad === 0) {
       alert("Por favor, selecciona una dificultad antes de publicar tu comentario.");
@@ -64,7 +65,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
     }
 
     const nuevoComentario = {
-      author: user?.id || null,
+      author: anonimo ? null : user?.id || null,
       content: nuevoTexto,
       course: ramo.id,
       votes: nuevaDificultad
@@ -87,14 +88,24 @@ const DetalleRamo = (props : propDetalleRamo) => {
   const [hover, setHover] = useState<number | null>(null);
 
   const getColorForLevel = (level: number) => {
+    // const colors = [
+    //   '#bae6fd', // 1: celeste claro
+    //   '#7dd3fc',
+    //   '#38bdf8',
+    //   '#facc15', // 4: amarillo intermedio
+    //   '#fb923c',
+    //   '#f87171',
+    //   '#dc2626', // 7: rojo intenso
+    // ];
+
     const colors = [
-      '#bae6fd', // 1: celeste claro
-      '#7dd3fc',
-      '#38bdf8',
-      '#facc15', // 4: amarillo intermedio
-      '#fb923c',
-      '#f87171',
-      '#dc2626', // 7: rojo intenso
+      '#d9f99d', // 1 - verde lima claro
+      '#bef264', // 2
+      '#a3e635', // 3
+      '#facc15', // 4 - amarillo
+      '#f59e0b', // 5 - naranja
+      '#f87171', // 6 - rojo claro
+      '#dc2626', // 7 - rojo intenso
     ];
     return colors[level - 1] || '#e5e7eb';
   };
@@ -264,14 +275,14 @@ const DetalleRamo = (props : propDetalleRamo) => {
                 <span
                   style={{
                     fontWeight: '600',
-                    color: getColorForLevel(hover || nuevaDificultad || 1),
+                    color: getColorForLevel(hover || nuevaDificultad || 7),
                     fontSize: '1rem',
                     minWidth: '110px',
                     textAlign: 'left',
                     textTransform: 'capitalize',
                   }}
                 >
-                  {nuevaDificultad > 0 ? getLabelForLevel(nuevaDificultad) : 'Sin seleccionar'}
+                  {((hover && hover > 0) || nuevaDificultad > 0) ? getLabelForLevel(hover || nuevaDificultad) : 'Sin seleccionar'}
                 </span>
               </div>
 
@@ -287,6 +298,38 @@ const DetalleRamo = (props : propDetalleRamo) => {
                 </p>
               )}
             </div>
+              {/* Botón switch "Comentar como anónimo" */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                <span style={{ color: '#374151', fontWeight: '600' }}>Anónimo</span>
+
+                <div
+                  onClick={() => setAnonimo(!anonimo)}
+                  style={{
+                    width: '48px',
+                    height: '26px',
+                    backgroundColor: anonimo ? '#2563eb' : '#e5e7eb',
+                    borderRadius: '9999px',
+                    position: 'relative',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease',
+                    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '3px',
+                      left: anonimo ? '26px' : '3px',
+                      width: '20px',
+                      height: '20px',
+                      backgroundColor: 'white',
+                      borderRadius: '50%',
+                      transition: 'left 0.2s ease',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                    }}
+                  ></div>
+                </div>
+              </div>
 
             {/* Selector de contenido */}
             <div style={{ marginBottom: '20px' }}>

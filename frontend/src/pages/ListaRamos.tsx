@@ -9,7 +9,7 @@ const ListaRamos = () => {
 
   const handleRamoClick = (ramoId: string) => {
     navigate(`/ramo/${ramoId}`);
-  };
+  };  
 
   useEffect(() => {
     const init = async () => {
