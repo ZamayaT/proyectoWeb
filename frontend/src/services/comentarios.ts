@@ -7,7 +7,6 @@ const baseUrl = '/api/comments';
 // Función para obtener comentarios de un ramo específico
 const getComentariosByRamo = (id: string): Promise<Comentario[]> => {
   const request = axios.get<Comentario[]>(`${baseUrl}/course/${id}`);
-  console.log(request)
   return request.then(response => response.data);
 };
 

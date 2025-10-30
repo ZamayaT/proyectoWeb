@@ -39,7 +39,7 @@ export default function Admin() {
   const deleteCourse = async (id: string) => {
     try {
       await ramosServices.deleteCourse(id);
-      alert("Curso eliminado correctamente ✅");
+      alert("Curso eliminado correctamente ✅}");
       // refrescar lista
       setCourses(prev => prev.filter(c => c.id !== id));
     } catch (error) {

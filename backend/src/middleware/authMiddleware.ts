@@ -26,8 +26,11 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
 // Middleware de autorización por rol
 export const authorizeRole = (roles: string[]) => {
-  return async (req: any, res: Response, next: NextFunction) => {
-    const user = await UserModel.findById(req.user.id);
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.userId) {
+      return res.status(401).json({ message: "No autenticado" });
+    }
+    const user = await UserModel.findById(req.userId);
     if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
     if (!roles.includes(user.role)) {
