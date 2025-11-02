@@ -5,8 +5,12 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './App.css';
 import { useEffect, useState } from 'react';
-import loginService from "./services/login"
-import type { User } from "./Types/Types"
+import loginService from "./services/login";
+import type { User } from "./Types/Types";
+import { AppBar, Toolbar, Button, Typography, Box, Link as MuiLink, IconButton } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 // Para correr, npm run dev en frontend y npx json-server --port 3001 db.json
 
@@ -25,43 +29,46 @@ function App() {
 
   return (
     <Router>
-      <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', width: '100%' }}>
-        <header style={{
-          textAlign: 'center',
-          padding: '40px 20px',
-          backgroundColor: '#2563eb',
-          color: 'white',
-          marginBottom: '20px',
-          width: '100%'
-        }}>
-          <h1 style={{ 
-            fontSize: '2.5rem', 
-            marginBottom: '10px', 
-            fontWeight: 'bold' 
-          }}>
-            Dificultad de Ramos DCC
-          </h1>
-          <p style={{ fontSize: '1.1rem', opacity: '0.9' }}>
-            Descubre qué tan difíciles son los ramos del Departamento de Ciencias de la Computación
-          </p>
-          <nav style={{ marginTop: '12px' }}>
-            <Link to="/" style={{ color: 'white', marginRight: '12px', textDecoration: 'underline' }}>Inicio</Link>
-            <Link to="/login" style={{ color: 'white', textDecoration: 'underline' }}>Login</Link>
-            {(user?.role === "admin") && 
-              <Link to="/admin" style={{ color: 'white', marginLeft: '12px', textDecoration: 'underline' }}>Admin</Link>
-            }
-          </nav>
-        </header>
-        
+      <Box sx={{ backgroundColor: '#f8fafc', minHeight: '100vh', width: '100%' }}>
+        <AppBar position="sticky">
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+              Dificultad de Ramos DCC
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <MuiLink to="/" component={Link} sx={{ color: 'white', textDecoration: 'none', marginRight: 2, '&:hover': { color: '#ffbc14ff' }, }}>
+                <IconButton color="inherit">
+                  <HomeIcon />
+                </IconButton>
+                Inicio
+              </MuiLink>
+              {(user?.role === "admin") && (
+                <MuiLink to="/admin" component={Link} sx={{ color: 'white', textDecoration: 'none', marginRight: 2, '&:hover': { color: '#e7a80aff' }, }}>
+                  <IconButton color="inherit">
+                    <AdminPanelSettingsIcon />
+                  </IconButton>
+                  Panel de administrador
+                </MuiLink>
+              )}
+              <MuiLink to="/login" component={Link} sx={{ color: 'white', textDecoration: 'none', '&:hover': { color: '#e7a80aff' }, }}>
+                <IconButton color="inherit">
+                  <AccountCircleIcon />
+                </IconButton>
+                Sesion
+              </MuiLink>
+            </Box>
+          </Toolbar>
+        </AppBar>
+
         <main>
           <Routes>
             <Route path="/" element={<ListaRamos />} />
-            <Route path="/ramo/:id" element={<DetalleRamo setUser={ (u) => setUser(u)} user={user}/>} />
-            <Route path="/login" element={<Login setUser={ (u) => setUser(u)} user={user}/>} />
+            <Route path="/ramo/:id" element={<DetalleRamo setUser={(u) => setUser(u)} user={user}/>} />
+            <Route path="/login" element={<Login setUser={(u) => setUser(u)} user={user}/>} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
-      </div>
+      </Box>
     </Router>
   );
 }
