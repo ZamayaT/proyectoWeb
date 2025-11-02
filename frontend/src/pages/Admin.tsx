@@ -11,6 +11,7 @@ export default function Admin() {
 
   const [newName, setNewName] = useState('');
   const [newCode, setNewCode] = useState('');
+  const [isOptional, setOptional] = useState(false)
 
   // Traemos los cursos estaticos por ahora
   const init = async () => {
@@ -23,7 +24,7 @@ export default function Admin() {
         code: r.code,
         name: r.name,
         difficulty: r.difficulty,
-        required: false,
+        required: r.required,
         totalComments: r.totalComments
       }));
 
@@ -56,13 +57,13 @@ export default function Admin() {
       code: newCode.trim(), 
       name: newName.trim(), 
       difficulty: 0, 
-      required: false,
+      required: isOptional,
       totalComments: 0,
     };
     ramosServices.createCourse(newCourse)
     .then( course => {
       setCourses(prev => [course, ...prev]);
-      setNewName(''); setNewCode(''); setShowAdd(false); setMessage('Ramo agregado');
+      setNewName(''); setNewCode(''); setShowAdd(false); setOptional(false); setMessage('Ramo agregado');
     })
   }
 
@@ -85,6 +86,10 @@ export default function Admin() {
             <div style={{ marginBottom: 8 }}>
               <label>Codigo</label>
               <input value={newCode} onChange={e => setNewCode(e.target.value)} style={{ marginLeft: 8, background:'#2563eb' }} />
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <label>Electivo</label>
+              <input type="checkbox" value="Electivo" onChange={() => setOptional(isOptional => !isOptional)} style={{ marginLeft: 8, background:'#2563eb' }} />
             </div>
             <div>
               <button onClick={() => addCourse()} style={{background:'#2563eb'}}>Crear ramo</button>

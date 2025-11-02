@@ -26,6 +26,9 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
   // User
   const { user} = props;
+
+  // Manejar la sección de agregar un comentario
+  const [isOpen, setIsOpen] = useState(true);
   
   // Cargar comentarios cuando cambie el id
   useEffect(() => {
@@ -135,6 +138,14 @@ const DetalleRamo = (props : propDetalleRamo) => {
     );
   }
 
+  const typeOfCourse = () => {
+    if(ramo.required){
+      return "Obligatorio"
+    } else {
+      return "Electivo"
+    }
+  }
+
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       {/* Botón para volver */}
@@ -167,7 +178,16 @@ const DetalleRamo = (props : propDetalleRamo) => {
         }}>
           {ramo.name}
         </h1>
-        
+
+        <p style={{ 
+          fontSize: '1.2rem', 
+          color: '#2563eb',
+          fontWeight: '600',
+          marginBottom: '5px'
+        }}>
+          {typeOfCourse()}
+        </p>   
+
         <p style={{ 
           fontSize: '1.2rem', 
           color: '#2563eb',
@@ -216,163 +236,189 @@ const DetalleRamo = (props : propDetalleRamo) => {
           </div>
         </div>
 
-        {/* Sección para crear comentario */}
-        <div style={{
+      {/* Sección para crear comentario */}
+      <div style={{
           backgroundColor: 'white',
           border: '1px solid #ddd',
           borderRadius: '8px',
           padding: '30px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginBottom: '30px'
-          }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
-              Agregar un nuevo comentario
-            </h2>
+          marginBottom: '30px',
+        }}>
+        <div 
+          style={{
+            marginBottom: '20px',
+            color: '#333',
+            cursor: 'pointer',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }} 
+          onClick={() => setIsOpen(isOpen => !isOpen)}
+        >
+          <h2 style={{display: 'inline'}}>Agregar un nuevo comentario</h2>
+          <h2 style={{
+            marginTop: '0.5rem',
+            marginRight: '2rem',
+            transform: isOpen? 'rotateZ(0.25turn) scale(1.5,2)' : 'rotateZ(-0.75turn) scale(-1.5,2)',
+            }}>‹</h2>
+        </div>
 
+        <div style={{
+          maxHeight: isOpen ? '1000px' : '0',
+          overflow: 'hidden',
+          transition: 'max-height 1s ease-out',
+        }}>
+
+          {isOpen && (
             <form onSubmit={handleAddComentario}>
 
-            {/* Selector de puntuación */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  color: '#374151',
-                  fontWeight: '600',
-                  marginBottom: '10px',
-                }}
-              >
-                Dificultad percibida <span style={{ color: 'red' }}>*</span>
-              </label>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ display: 'flex', gap: '4px' }}>
-                  {[...Array(7)].map((_, index) => {
-                    const level = index + 1;
-                    const isActive = level <= (hover || nuevaDificultad);
-                    return (
-                      <div
-                        key={index}
-                        onClick={() => setNuevaDificultad(level)}
-                        onMouseEnter={() => setHover(level)}
-                        onMouseLeave={() => setHover(null)}
-                        style={{
-                          width: '28px',
-                          height: '28px',
-                          borderRadius: '4px',
-                          backgroundColor: isActive ? getColorForLevel(hover || nuevaDificultad || 1) : '#e5e7eb',
-                          transition: 'transform 0.2s ease, background-color 0.2s ease',
-                          cursor: 'pointer',
-                          transform: isActive && hover === level ? 'scale(1.1)' : 'scale(1)',
-                          boxShadow: isActive
-                            ? '0 0 6px rgba(0,0,0,0.1)'
-                            : 'inset 0 0 2px rgba(0,0,0,0.1)',
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-
-                <span
+              {/* Selector de puntuación */}
+              <div style={{ marginBottom: '20px' }}>
+                <label
                   style={{
+                    display: 'block',
+                    color: '#374151',
                     fontWeight: '600',
-                    color: getColorForLevel(hover || nuevaDificultad || 7),
-                    fontSize: '1rem',
-                    minWidth: '110px',
-                    textAlign: 'left',
-                    textTransform: 'capitalize',
+                    marginBottom: '10px',
                   }}
                 >
-                  {((hover && hover > 0) || nuevaDificultad > 0) ? getLabelForLevel(hover || nuevaDificultad) : 'Sin seleccionar'}
-                </span>
-              </div>
+                  Dificultad percibida <span style={{ color: 'red' }}>*</span>
+                </label>
 
-              {nuevaDificultad > 0 && (
-                <p
-                  style={{
-                    marginTop: '6px',
-                    color: '#555',
-                    fontSize: '0.9rem',
-                  }}
-                >
-                  Nivel seleccionado: {nuevaDificultad}/7
-                </p>
-              )}
-            </div>
-              {/* Botón switch "Comentar como anónimo" */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                <span style={{ color: '#374151', fontWeight: '600' }}>Anónimo</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {[...Array(7)].map((_, index) => {
+                      const level = index + 1;
+                      const isActive = level <= (hover || nuevaDificultad);
+                      return (
+                        <div
+                          key={index}
+                          onClick={() => setNuevaDificultad(level)}
+                          onMouseEnter={() => setHover(level)}
+                          onMouseLeave={() => setHover(null)}
+                          style={{
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '4px',
+                            backgroundColor: isActive ? getColorForLevel(hover || nuevaDificultad || 1) : '#e5e7eb',
+                            transition: 'transform 0.2s ease, background-color 0.2s ease',
+                            cursor: 'pointer',
+                            transform: isActive && hover === level ? 'scale(1.1)' : 'scale(1)',
+                            boxShadow: isActive
+                              ? '0 0 6px rgba(0,0,0,0.1)'
+                              : 'inset 0 0 2px rgba(0,0,0,0.1)',
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
 
-                <div
-                  onClick={() => setAnonimo(!anonimo)}
-                  style={{
-                    width: '48px',
-                    height: '26px',
-                    backgroundColor: anonimo ? '#2563eb' : '#e5e7eb',
-                    borderRadius: '9999px',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s ease',
-                    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
-                  }}
-                >
-                  <div
+                  <span
                     style={{
-                      position: 'absolute',
-                      top: '3px',
-                      left: anonimo ? '26px' : '3px',
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: 'white',
-                      borderRadius: '50%',
-                      transition: 'left 0.2s ease',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                      fontWeight: '600',
+                      color: getColorForLevel(hover || nuevaDificultad || 7),
+                      fontSize: '1rem',
+                      minWidth: '110px',
+                      textAlign: 'left',
+                      textTransform: 'capitalize',
                     }}
-                  ></div>
+                  >
+                    {((hover && hover > 0) || nuevaDificultad > 0) ? getLabelForLevel(hover || nuevaDificultad) : 'Sin seleccionar'}
+                  </span>
                 </div>
+
+                {nuevaDificultad > 0 && (
+                  <p
+                    style={{
+                      marginTop: '6px',
+                      color: '#555',
+                      fontSize: '0.9rem',
+                    }}
+                  >
+                    Nivel seleccionado: {nuevaDificultad}/7
+                  </p>
+                )}
+              </div>
+                {/* Botón switch "Comentar como anónimo" */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                  <span style={{ color: '#374151', fontWeight: '600' }}>Anónimo</span>
+
+                  <div
+                    onClick={() => setAnonimo(!anonimo)}
+                    style={{
+                      width: '48px',
+                      height: '26px',
+                      backgroundColor: anonimo ? '#2563eb' : '#e5e7eb',
+                      borderRadius: '9999px',
+                      position: 'relative',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s ease',
+                      boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '3px',
+                        left: anonimo ? '26px' : '3px',
+                        width: '20px',
+                        height: '20px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%',
+                        transition: 'left 0.2s ease',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                      }}
+                    ></div>
+                  </div>
+                </div>
+
+              {/* Selector de contenido */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', color: '#374151', fontWeight: '600', marginBottom: '8px' }}>
+                  Tu comentario
+                </label>
+                <textarea
+                  value={nuevoTexto}
+                  onChange={(e) => setNuevoTexto(e.target.value)}
+                  placeholder="Comparte tu experiencia sobre este ramo..."
+                  rows={4}
+                  required
+                  style={{
+                    width: '95%',
+                    padding: '10px 12px',
+                    marginLeft: '2px',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '6px',
+                    fontSize: '1rem',
+                    color: '#1e293b',
+                    backgroundColor: '#ffffffff',
+                    resize: 'vertical'
+                  }}
+                />
               </div>
 
-            {/* Selector de contenido */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', color: '#374151', fontWeight: '600', marginBottom: '8px' }}>
-                Tu comentario
-              </label>
-              <textarea
-                value={nuevoTexto}
-                onChange={(e) => setNuevoTexto(e.target.value)}
-                placeholder="Comparte tu experiencia sobre este ramo..."
-                rows={4}
-                required
+              <button
+                type="submit"
                 style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  border: '1px solid #cbd5e1',
+                  backgroundColor: '#2563eb',
+                  color: 'white',
+                  fontWeight: '600',
+                  padding: '10px 16px',
+                  border: 'none',
                   borderRadius: '6px',
+                  cursor: 'pointer',
                   fontSize: '1rem',
-                  color: '#1e293b',
-                  resize: 'vertical'
+                  transition: 'background-color 0.2s ease'
                 }}
-              />
-            </div>
-
-            <button
-              type="submit"
-              style={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                fontWeight: '600',
-                padding: '10px 16px',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                transition: 'background-color 0.2s ease'
-              }}
-              onMouseOver={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1d4ed8')}
-              onMouseOut={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#2563eb')}
-            >
-              Publicar comentario
-            </button>
-          </form>
+                onMouseOver={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1d4ed8')}
+                onMouseOut={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#2563eb')}
+              >
+                Publicar comentario
+              </button>
+            </form>
+          )}
+        </div>
       </div>
 
       {/* Sección de comentarios */}

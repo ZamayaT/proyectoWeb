@@ -33,6 +33,14 @@ const ListaRamos = () => {
     return labels[level - 1] || '';
   };
 
+  const typeOfCourse = (required: boolean) => {
+    if(required){
+      return "Obligatorio"
+    } else {
+      return "Electivo"
+    }
+  }
+
   return (
     <div style={{ padding: '20px' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>
@@ -81,7 +89,7 @@ const ListaRamos = () => {
               marginBottom: '15px',
               lineHeight: '1.4'
             }}>
-              {ramo.code}
+              {ramo.code + " - " + typeOfCourse(ramo.required)}
             </p>
             
             {ramo.difficulty === 0 ? (
