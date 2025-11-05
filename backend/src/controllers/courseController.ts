@@ -58,3 +58,33 @@ export const deleteCourse = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+
+// Funciones para buscar cursos según filtros
+export const getElectives = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const courses = await CourseModel.find({ required: false });
+
+    if (courses && courses.length > 0) {
+      res.json(courses);
+    } else {
+      res.status(404).json({ error: "No se encontraron cursos electivos" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getRequired = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const courses = await CourseModel.find({ required: true });
+
+    if (courses && courses.length > 0) {
+      res.json(courses);
+    } else {
+      res.status(404).json({ error: "No se encontraron cursos obligatorios" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};

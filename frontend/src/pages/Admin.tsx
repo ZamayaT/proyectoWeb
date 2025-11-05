@@ -116,7 +116,7 @@ export default function Admin() {
                     <ListItem
                       key={c.id}
                       secondaryAction={
-                        <Button color="error" variant="outlined" onClick={() => deleteCourse(c.id)}>
+                        <Button color="error" variant="contained" onClick={() => deleteCourse(c.id)}>
                           Eliminar
                         </Button>
                       }

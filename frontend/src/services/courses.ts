@@ -23,9 +23,21 @@ const createCourse = (newCourse: Ramo) => {
   return axiosSecure.post<Ramo>(baseUrl, newCourse).then(res => res.data);
 };
 
+const getOnlyElectives = () => {
+  const request = axios.get<Ramo[]>(`${baseUrl}/electives`)
+  return request.then(response => response.data)
+}
+
+const getOnlyRequired = () => {
+  const request = axios.get<Ramo[]>(`${baseUrl}/required`)
+  return request.then(response => response.data)
+}
+
 export default {
   getAll,
   getCourse,
   deleteCourse,
-  createCourse
+  createCourse,
+  getOnlyElectives,
+  getOnlyRequired
 };
