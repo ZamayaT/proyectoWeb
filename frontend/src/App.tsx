@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import loginService from "./services/login";
 import type { User } from "./Types/Types";
 import { AppBar, Toolbar, Typography, Box, Link as MuiLink, IconButton } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
@@ -32,15 +32,18 @@ function App() {
       <Box sx={{ backgroundColor: '#f8fafc', minHeight: '100vh', width: '100%' }}>
         <AppBar position="sticky">
           <Toolbar sx={{ justifyContent: 'space-between' }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-              Dificultad de Ramos DCC
-            </Typography>
+            <MuiLink to="/" component={Link} sx={{ color: 'white', textDecoration: 'none', marginRight: 2, '&:hover': { color: 'white' }, }}>
+              <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                Dificultad de Ramos DCC
+              </Typography>
+            </MuiLink>
+
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <MuiLink to="/" component={Link} sx={{ color: 'white', textDecoration: 'none', marginRight: 2, '&:hover': { color: '#ffbc14ff' }, }}>
                 <IconButton color="inherit">
-                  <HomeIcon />
+                  <FormatListBulletedIcon />
                 </IconButton>
-                Inicio
+                Lista de Ramos
               </MuiLink>
               {(user?.role === "admin") && (
                 <MuiLink to="/admin" component={Link} sx={{ color: 'white', textDecoration: 'none', marginRight: 2, '&:hover': { color: '#e7a80aff' }, }}>

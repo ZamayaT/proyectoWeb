@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import ramosServices from "../services/courses"
 import type { Ramo } from '../Types/Types';
 import { useEffect, useState } from 'react';
-import { Container, Card, CardContent, Typography, Box } from '@mui/material';
+import { Container, Card, CardContent, Typography } from '@mui/material';
 import Grid from "@mui/material/Grid";
 
 const ListaRamos = () => {
@@ -69,12 +69,12 @@ const ListaRamos = () => {
                   {ramo.name}
                 </Typography>
 
-                <Typography variant="body2" sx={{ color: '#666', mb: 2 }}>
+                <Typography variant="body2" sx={{ color: '#555', mb: 2 }}>
                   {ramo.code} — {typeOfCourse(ramo.required)}
                 </Typography>
                 
                 {ramo.difficulty === 0 ? (
-                  <Typography variant="body2" sx={{ color: '#666', fontStyle: 'italic' }}>
+                  <Typography variant="body2" sx={{ color: '#555', fontStyle: 'italic' }}>
                     Aún no hay comentarios ...
                   </Typography>
                 ) : (

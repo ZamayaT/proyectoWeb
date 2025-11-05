@@ -1,7 +1,7 @@
 import { useState } from 'react';
-// import axios from 'axios';
-import loginService from "../services/login"
-import type {User} from "../Types/Types"
+import loginService from "../services/login";
+import type {User} from "../Types/Types";
+import { Container, Paper, TextField, Button, Typography, Stack, Alert, Box } from '@mui/material';
 
 interface propLogin {
   setUser: (user: User | null) => void,
@@ -82,39 +82,75 @@ export default function Login( props : propLogin) {
   };
 
   return (
-    <>
-      <div style={{ maxWidth: 480, margin: '20px auto', padding: 20, background: 'white', borderRadius: 8, color: 'black' }}>
-      {!user ? (
-        <>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 12 }}>
-            <label>Usuario</label>
-            <input value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: 8, background: "#2563eb" }} />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label>Contraseña</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: 8, background: "#2563eb" }} />
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="submit" style={{ padding: '8px 12px', background: '#2563eb' }}>Entrar</button>
-            <button type="button" onClick={handleRegister} style={{ padding: '8px 12px', background:'#2563eb' }}>Registrar</button>
-          </div>
-        </form>
-        {message && <p style={{ marginTop: 12, color: 'black' }}>{message}</p>}
-        </>
-      ) : (
-        <>
-          <h2>Bienvenido 👋</h2>
-          <p>Usuario  <b>{user.username || 'Usuario activo'}</b> logueado</p>
-          <br></br>
-          <button onClick={handleLogout} style={{ padding: '8px 12px', background: 'red', color: 'white' }}>
-            Logout
-          </button>
-        </>
-      )
-    }
-    </div>
-    </>
-  )
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+        
+        {!user ? (
+          <Box>
+            <Typography variant="h4" fontWeight="bold" mb={2}>
+              Iniciar Sesión
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit}>
+              <Stack spacing={2}>
+                <TextField
+                  label="Usuario"
+                  fullWidth
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+
+                <TextField
+                  label="Contraseña"
+                  type="password"
+                  fullWidth
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <Stack direction="row" spacing={2}>
+                  <Button type="submit" variant="contained" fullWidth>
+                    Entrar
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={handleRegister}
+                  >
+                    Registrar
+                  </Button>
+                </Stack>
+
+                {message && <Alert severity="info">{message}</Alert>}
+              </Stack>
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <Typography variant="h4" fontWeight="bold" mb={2}>
+              Bienvenido 👋
+            </Typography>
+
+            <Typography>
+              Sesión de usuario <b>{user.username}</b> iniciada correctamente
+            </Typography>
+
+            <Button
+              variant="contained"
+              color="error"
+              fullWidth
+              sx={{ mt: 3 }}
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+            </Button>
+
+            {message && <Alert sx={{ mt: 2 }} severity="info">{message}</Alert>}
+          </>
+        )}
+
+      </Paper>
+    </Container>
+  );
 }

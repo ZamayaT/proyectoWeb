@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Ramo } from '../Types/Types';
-import ramosServices from "../services/courses"
+import ramosServices from "../services/courses";
+import { Container, Alert, Typography, Button, TextField, Checkbox, FormControlLabel, Card, CardContent, Stack, List, ListItem, ListItemText, Box } from "@mui/material";
 
 export default function Admin() {
   const [courses, setCourses] = useState<Ramo[]>([]);
@@ -11,7 +12,7 @@ export default function Admin() {
 
   const [newName, setNewName] = useState('');
   const [newCode, setNewCode] = useState('');
-  const [isRequired, setOptional] = useState(true)
+  const [isRequired, setIsRequired] = useState(true);
 
   // Traemos los cursos estaticos por ahora
   const init = async () => {
@@ -60,57 +61,75 @@ export default function Admin() {
       required: isRequired,
       totalComments: 0,
     };
+    
     ramosServices.createCourse(newCourse)
     .then( course => {
       setCourses(prev => [course, ...prev]);
-      setNewName(''); setNewCode(''); setShowAdd(false); setOptional(false); setMessage('Ramo agregado');
+      setNewName(''); setNewCode(''); setShowAdd(false); setIsRequired(true); setMessage('Ramo agregado');
     })
   }
 
 
   return (
-    <div style={{ padding: 20, color: 'black', maxWidth: 800, margin: '0 auto' }}>
-      <h2>Panel de administración</h2>
-      {message && <p>{message}</p>}
-      <section style={{ marginTop: 20 }}>
-        <h3>Ramos</h3>
-        <div style={{ marginBottom: 12 }}>
-          <button style={{ background: '#2563eb' }} onClick={() => setShowAdd(s => !s)}>{showAdd ? 'Cancelar' : 'Agregar ramo'} </button>
-        </div>
-        {showAdd && (
-          <div style={{ marginBottom: 12, padding: 10, border: '1px solid #ddd' }}>
-            <div style={{ marginBottom: 8 }}>
-              <label>Nombre</label>
-              <input value={newName} onChange={e => setNewName(e.target.value)} style={{ marginLeft: 8, background:'#2563eb' }} />
-            </div>
-            <div style={{ marginBottom: 8 }}>
-              <label>Codigo</label>
-              <input value={newCode} onChange={e => setNewCode(e.target.value)} style={{ marginLeft: 8, background:'#2563eb' }} />
-            </div>
-            <div style={{ marginBottom: 8 }}>
-              <label>Electivo</label>
-              <input type="checkbox" value="Electivo" onChange={() => setOptional(isRequired => !isRequired)} style={{ marginLeft: 8, background:'#2563eb' }} />
-            </div>
-            <div>
-              <button onClick={() => addCourse()} style={{background:'#2563eb'}}>Crear ramo</button>
-            </div>
-          </div>
-        )}
-        {loading ? <p>Cargando...</p> : (
-          <div>
-            {courses.length === 0 && <p>No hay ramos</p>}
-            <ul>
-              {courses.map(c => (
-                <li key={c.id} style={{ marginBottom: 8 }}>
-                  <strong>{c.code}</strong> — {c.name} {' '}
-                  <button onClick={() => deleteCourse(c.id)} style={{ marginLeft: 8, background:'#2563eb' }}>Eliminar</button>
-                </li>
-              ))}
-            </ul>
-            <button onClick={init} style={{background:'#2563eb'}}>Refrescar ramos</button>
-          </div>
-        )}
-      </section>
-    </div>
-  )
+    <Container maxWidth="md" sx={{ p: 4 }}>
+      <Typography variant="h4" align='center' sx={{fontWeight: 'bold', color: "#333", marginBottom: 4}}>
+        Administrar Ramos
+      </Typography>
+
+      {message && (
+        <Alert severity="info" sx={{ mb: 2 }}> {message} </Alert>
+      )}
+
+      <Box sx={{ mb: 2 }}>
+        <Button variant="contained" onClick={() => setShowAdd(s => !s)}> {showAdd ? "Cancelar" : "Agregar ramo"} </Button>
+      </Box>
+
+      {showAdd && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Stack spacing={2}>
+              <TextField label="Nombre" value={newName} onChange={(e) => setNewName(e.target.value)} fullWidth/>
+              <TextField label="Código" value={newCode} onChange={(e) => setNewCode(e.target.value)} fullWidth/>
+
+              <FormControlLabel
+                control={ <Checkbox checked={isRequired} onChange={() => setIsRequired(!isRequired)} /> }
+                label="Obligatorio"
+              />
+
+              <Button variant="contained" onClick={addCourse}> Crear ramo </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+      )}
+
+      {loading ? (
+        <Typography>Cargando...</Typography>
+      ) : (
+        <Box>
+          {courses.length === 0 ? (
+            <Typography>No hay ramos</Typography>
+          ) : (
+            <Card sx={{ mb: 2 }}>
+              <CardContent>
+                <List>
+                  {courses.map((c) => (
+                    <ListItem
+                      key={c.id}
+                      secondaryAction={
+                        <Button color="error" variant="outlined" onClick={() => deleteCourse(c.id)}>
+                          Eliminar
+                        </Button>
+                      }
+                    >
+                      <ListItemText primary={`${c.code} — ${c.name}`} />
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          )}
+        </Box>
+      )}
+    </Container>
+  );
 }

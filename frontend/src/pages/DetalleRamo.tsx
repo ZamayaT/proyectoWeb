@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import type { Comentario } from '../Types/Types';
 import comentariosService from '../services/comentarios';
-import ramosServices from "../services/courses"
-import type { Ramo, User } from "../Types/Types"
+import ramosServices from "../services/courses";
+import type { Ramo, User } from "../Types/Types";
+
+import { Container, Card, CardContent, Typography, Button, Box, Stack, Alert, TextField, Switch, FormControlLabel, Collapse, Divider, Chip, Paper } from '@mui/material';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface propDetalleRamo {
   setUser: (user: User | null) => void,
@@ -28,7 +31,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
   const { user} = props;
 
   // Manejar la sección de agregar un comentario
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   
   // Cargar comentarios cuando cambie el id
   useEffect(() => {
@@ -83,6 +86,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
       setComentarios([creado, ...comentarios]);
       setNuevaDificultad(0);
       setNuevoTexto('');
+      setAnonimo(false);
     } catch (err) {
       console.error(err);
     }
@@ -91,16 +95,6 @@ const DetalleRamo = (props : propDetalleRamo) => {
   const [hover, setHover] = useState<number | null>(null);
 
   const getColorForLevel = (level: number) => {
-    // const colors = [
-    //   '#bae6fd', // 1: celeste claro
-    //   '#7dd3fc',
-    //   '#38bdf8',
-    //   '#facc15', // 4: amarillo intermedio
-    //   '#fb923c',
-    //   '#f87171',
-    //   '#dc2626', // 7: rojo intenso
-    // ];
-
     const colors = [
       '#d9f99d', // 1 - verde lima claro
       '#bef264', // 2
@@ -129,12 +123,12 @@ const DetalleRamo = (props : propDetalleRamo) => {
   // Si no se encuentra el ramo
   if (!ramo) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>Ramo no encontrado</h2>
-        <Link to="/" style={{ color: '#2563eb', textDecoration: 'none' }}>
-          ← Volver a la lista
-        </Link>
-      </div>
+      <Container sx={{ py: 4 }}>
+        <Button component={Link} to="/" sx={{ mb: 2 }}> ← Volver </Button>
+        <Typography variant="h4" align='center' sx={{fontWeight: 'bold', color: "#333", marginBottom: 4}}>
+          Ramo no encontrado
+        </Typography>
+      </Container>
     );
   }
 
@@ -147,355 +141,182 @@ const DetalleRamo = (props : propDetalleRamo) => {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      {/* Botón para volver */}
-      <Link 
-        to="/" 
-        style={{ 
-          color: '#2563eb', 
-          textDecoration: 'none',
-          fontSize: '1rem',
-          marginBottom: '20px',
-          display: 'inline-block'
-        }}
-      >
-        ← Volver a la lista
-      </Link>
+    <Container maxWidth="md" sx={{ py: 4 }}>
 
-      {/* Información del ramo */}
-      <div style={{
-        backgroundColor: 'white',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '30px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        marginBottom: '30px'
-      }}>
-        <h1 style={{ 
-          fontSize: '2rem', 
-          marginBottom: '10px',
-          color: '#333'
-        }}>
-          {ramo.name}
-        </h1>
+      <Button component={Link} to="/" sx={{ mb: 2 }}> ← Volver </Button>
 
-        <p style={{ 
-          fontSize: '1.2rem', 
-          color: '#2563eb',
-          fontWeight: '600',
-          marginBottom: '5px'
-        }}>
-          {typeOfCourse()}
-        </p>   
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h4" fontWeight={700}>{ramo.name}</Typography>
 
-        <p style={{ 
-          fontSize: '1.2rem', 
-          color: '#2563eb',
-          fontWeight: '600',
-          marginBottom: '20px'
-        }}>
-          {ramo.code}
-        </p>
+          <Typography variant="h5" color="primary">{ramo.code}</Typography>
 
-        <div style={{ marginBottom: '15px' }}>
-          <h3 style={{ fontSize: '1.1rem', marginBottom: '10px', color: '#333' }}>
-            Nivel de Dificultad 
-            {ramo.difficulty > 0 && (
-                <span> ({ramo.difficulty.toFixed()}/7)</span>
-              )}
-          </h3>
-          
-          {/* Barra visual de dificultad */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ display: 'flex', gap: '3px' }}>
-              {[...Array(7)].map((_, index) => (
-                <div
-                  key={index}
-                  style={{
-                    width: '20px',
-                    height: '20px',
-                    backgroundColor: index < ramo.difficulty ? getColorForLevel(Number(ramo.difficulty.toFixed())) : '#e5e7eb',
-                    borderRadius: '3px'
-                  }}
-                />
-              ))}
-            </div>
-                <span
-                  style={{
-                    fontWeight: '600',
-                    color: getColorForLevel(Number(ramo.difficulty.toFixed())), 
-                    fontSize: '1rem',
-                    minWidth: '110px',
-                    textAlign: 'left',
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {ramo.difficulty > 0 ? getLabelForLevel(Number(ramo.difficulty.toFixed())) : 'Sin seleccionar'}
-                </span>
-              </div>
-          </div>
-        </div>
+          <Chip
+            label={typeOfCourse()}
+            color="primary"
+            sx={{ mt: 1, mb: 1 }}
+          />
 
-      {/* Sección para crear comentario */}
-      <div style={{
-          backgroundColor: 'white',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          padding: '30px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginBottom: '30px',
-        }}>
-        <div 
-          style={{
-            marginBottom: '20px',
-            color: '#333',
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }} 
-          onClick={() => setIsOpen(isOpen => !isOpen)}
-        >
-          <h2 style={{display: 'inline'}}>Agregar un nuevo comentario</h2>
-          <h2 style={{
-            marginTop: '0.5rem',
-            marginRight: '2rem',
-            transform: isOpen? 'rotateZ(0.25turn) scale(1.5,2)' : 'rotateZ(-0.75turn) scale(-1.5,2)',
-            }}>‹</h2>
-        </div>
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6">
+              Nivel de dificultad 
+              {ramo.difficulty > 0 && ` (${ramo.difficulty.toFixed()}/7)`}
+            </Typography>
 
-        <div style={{
-          maxHeight: isOpen ? '1000px' : '0',
-          overflow: 'hidden',
-          transition: 'max-height 1s ease-out',
-        }}>
-
-          {isOpen && (
-            <form onSubmit={handleAddComentario}>
-
-              {/* Selector de puntuación */}
-              <div style={{ marginBottom: '20px' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    color: '#374151',
-                    fontWeight: '600',
-                    marginBottom: '10px',
-                  }}
-                >
-                  Dificultad percibida <span style={{ color: 'red' }}>*</span>
-                </label>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    {[...Array(7)].map((_, index) => {
-                      const level = index + 1;
-                      const isActive = level <= (hover || nuevaDificultad);
-                      return (
-                        <div
-                          key={index}
-                          onClick={() => setNuevaDificultad(level)}
-                          onMouseEnter={() => setHover(level)}
-                          onMouseLeave={() => setHover(null)}
-                          style={{
-                            width: '28px',
-                            height: '28px',
-                            borderRadius: '4px',
-                            backgroundColor: isActive ? getColorForLevel(hover || nuevaDificultad || 1) : '#e5e7eb',
-                            transition: 'transform 0.2s ease, background-color 0.2s ease',
-                            cursor: 'pointer',
-                            transform: isActive && hover === level ? 'scale(1.1)' : 'scale(1)',
-                            boxShadow: isActive
-                              ? '0 0 6px rgba(0,0,0,0.1)'
-                              : 'inset 0 0 2px rgba(0,0,0,0.1)',
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-
-                  <span
-                    style={{
-                      fontWeight: '600',
-                      color: getColorForLevel(hover || nuevaDificultad || 7),
-                      fontSize: '1rem',
-                      minWidth: '110px',
-                      textAlign: 'left',
-                      textTransform: 'capitalize',
+            <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+              <Box sx={{ display: "flex", gap: 0.5 }}>
+                {[...Array(7)].map((_, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 1,
+                      backgroundColor:
+                        i < ramo.difficulty
+                          ? getColorForLevel(Number(ramo.difficulty.toFixed()))
+                          : "#e5e7eb"
                     }}
-                  >
-                    {((hover && hover > 0) || nuevaDificultad > 0) ? getLabelForLevel(hover || nuevaDificultad) : 'Sin seleccionar'}
-                  </span>
-                </div>
+                  />
+                ))}
+              </Box>
 
-                {nuevaDificultad > 0 && (
-                  <p
-                    style={{
-                      marginTop: '6px',
-                      color: '#555',
-                      fontSize: '0.9rem',
-                    }}
-                  >
-                    Nivel seleccionado: {nuevaDificultad}/7
-                  </p>
-                )}
-              </div>
-                {/* Botón switch "Comentar como anónimo" */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                  <span style={{ color: '#374151', fontWeight: '600' }}>Anónimo</span>
-
-                  <div
-                    onClick={() => setAnonimo(!anonimo)}
-                    style={{
-                      width: '48px',
-                      height: '26px',
-                      backgroundColor: anonimo ? '#2563eb' : '#e5e7eb',
-                      borderRadius: '9999px',
-                      position: 'relative',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s ease',
-                      boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
-                    }}
-                  >
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '3px',
-                        left: anonimo ? '26px' : '3px',
-                        width: '20px',
-                        height: '20px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                        transition: 'left 0.2s ease',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                      }}
-                    ></div>
-                  </div>
-                </div>
-
-              {/* Selector de contenido */}
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', color: '#374151', fontWeight: '600', marginBottom: '8px' }}>
-                  Tu comentario
-                </label>
-                <textarea
-                  value={nuevoTexto}
-                  onChange={(e) => setNuevoTexto(e.target.value)}
-                  placeholder="Comparte tu experiencia sobre este ramo..."
-                  rows={4}
-                  required
-                  style={{
-                    width: '95%',
-                    padding: '10px 12px',
-                    marginLeft: '2px',
-                    border: '1px solid #cbd5e1',
-                    borderRadius: '6px',
-                    fontSize: '1rem',
-                    color: '#1e293b',
-                    backgroundColor: '#ffffffff',
-                    resize: 'vertical'
-                  }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                style={{
-                  backgroundColor: '#2563eb',
-                  color: 'white',
-                  fontWeight: '600',
-                  padding: '10px 16px',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  transition: 'background-color 0.2s ease'
+              <Typography
+                sx={{
+                  ml: 2,
+                  color: getColorForLevel(Number(ramo.difficulty.toFixed())),
+                  fontWeight: "bold"
                 }}
-                onMouseOver={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1d4ed8')}
-                onMouseOut={(e) => ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#2563eb')}
               >
+                {ramo.difficulty > 0
+                  ? getLabelForLevel(Number(ramo.difficulty.toFixed()))
+                  : "Sin datos"}
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", cursor: "pointer" }}
+            onClick={() => setIsOpen(isOpen => !isOpen)}
+          >
+            <Typography variant="h5">Agregar comentario</Typography>
+            <ExpandMoreIcon
+              sx={{
+                transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.3s ease"
+              }}
+            />
+          </Box>
+
+          <Collapse in={isOpen}>
+            <Box component="form" onSubmit={handleAddComentario} sx={{ mt: 2 }}>
+              <Typography fontWeight={600} sx={{ mb: 1 }}> Dificultad * </Typography>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ display: "flex", gap: 0.6 }}>
+                  {[...Array(7)].map((_, index) => {
+                    const level = index + 1;
+                    const isActive = level <= (hover || nuevaDificultad);
+                    return (
+                      <Box
+                        key={index}
+                        onMouseEnter={() => setHover(level)}
+                        onMouseLeave={() => setHover(null)}
+                        onClick={() => setNuevaDificultad(level)}
+                        sx={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: 1,
+                          cursor: "pointer",
+                          backgroundColor: isActive
+                            ? getColorForLevel(hover || nuevaDificultad || 1)
+                            : "#e5e7eb",
+                          transition: "0.2s"
+                        }}
+                      />
+                    );
+                  })}
+                </Box>
+
+                <Typography sx={{ fontWeight: "bold" }}>
+                  {((hover && hover > 0) || nuevaDificultad > 0)
+                    ? getLabelForLevel(hover || nuevaDificultad)
+                    : "Sin seleccionar"}
+                </Typography>
+              </Box>
+
+              <FormControlLabel
+                control={<Switch checked={anonimo} onChange={() => setAnonimo(a => !a)} />}
+                label="Comentar como anónimo"
+                sx={{ mt: 2 }}
+              />
+
+              <TextField
+                label="Tu comentario"
+                multiline
+                rows={4}
+                value={nuevoTexto}
+                onChange={(e) => setNuevoTexto(e.target.value)}
+                fullWidth
+                sx={{ mt: 2 }}
+                required
+              />
+
+              <Button type="submit" variant="contained" sx={{ mt: 2 }}>
                 Publicar comentario
-              </button>
-            </form>
+              </Button>
+            </Box>
+          </Collapse>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <Typography variant="h5" sx={{ mb: 2 }}> Comentarios ({comentarios.length})</Typography>
+
+          {loading && <Typography>Cargando comentarios…</Typography>}
+          {error && <Alert severity="error">{error}</Alert>}
+
+          {!loading && comentarios.length === 0 && (
+            <Typography fontStyle="italic">Sin comentarios aún.</Typography>
           )}
-        </div>
-      </div>
 
-      {/* Sección de comentarios */}
-      <div style={{
-        backgroundColor: 'white',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '30px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '20px', color: '#333' }}>
-          Comentarios de estudiantes ({comentarios.length})
-        </h2>
+          <Stack spacing={2} sx={{ mt: 2 }}>
+            {comentarios.map(c => (
+              <Paper key={c.id} sx={{ p: 2 }}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography fontWeight={600}>
+                    {c.author?.username ?? "Anónimo"}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {new Date(c.createdAt).toLocaleDateString()}
+                  </Typography>
+                </Box>
 
-        {loading && (
-          <p style={{ color: '#666', fontStyle: 'italic' }}>
-            Cargando comentarios...
-          </p>
-        )}
+                <Typography sx={{ mt: 1 }}>{c.content}</Typography>
 
-        {error && (
-          <p style={{ color: '#dc2626', marginBottom: '20px' }}>
-            {error}
-          </p>
-        )}
-
-        {!loading && !error && comentarios.length === 0 && (
-          <p style={{ color: '#666', fontStyle: 'italic' }}>
-            Aún no hay comentarios para este ramo. ¡Sé el primero en compartir tu experiencia!
-          </p>
-        )}
-
-        {!loading && !error && comentarios.length > 0 && (
-          <div>
-            {comentarios.map((comentario) => (
-              <div 
-                key={comentario.id} 
-                style={{
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                  padding: '20px',
-                  marginBottom: '15px'
-                }}
-              >
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  marginBottom: '10px' 
-                }}>
-                  <span style={{ fontWeight: '600', color: '#1e293b' }}>
-                    {comentario.author?.username || "Anónimo"}
-                  </span>
-                  <span style={{ fontSize: '0.9rem', color: '#64748b' }}>
-                    {new Date(comentario.createdAt).getDate().toString().padStart(2, '0')}-
-                    {(new Date(comentario.createdAt).getMonth() + 1).toString().padStart(2, '0')}-
-                    {new Date(comentario.createdAt).getFullYear()}
-                  </span>
-                </div>
-                <p style={{ color: '#374151', lineHeight: '1.6' }}>
-                  {comentario.content}
-                </p>
-
-                {comentario.votes > 0 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ fontWeight: '600', color: getColorForLevel(comentario.votes), fontSize: '0.9rem' }}>
-                      {getLabelForLevel(comentario.votes)} ({comentario.votes}/7)
-                    </span>
-                  </div>
+                {c.votes > 0 && (
+                  <Typography
+                    sx={{
+                      mt: 1,
+                      fontWeight: 600,
+                      color: getColorForLevel(c.votes)
+                    }}
+                  >
+                    {getLabelForLevel(c.votes)} ({c.votes}/7)
+                  </Typography>
                 )}
-              </div>
+              </Paper>
             ))}
-          </div>
-        )}
-      </div>
-    </div>
+          </Stack>
+        </CardContent>
+      </Card>
+
+    </Container>
   );
 };
 
