@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import ramosServices from "../services/courses"
 import type { Ramo } from '../Types/Types';
 import { useEffect, useState } from 'react';
+import { Container, Card, CardContent, Typography, Box } from '@mui/material';
+import Grid from "@mui/material/Grid";
 
 const ListaRamos = () => {
   const [ramos, setRamos] = useState<Ramo[]>([]);
@@ -42,74 +44,51 @@ const ListaRamos = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>
+    <Container sx={{paddingTop: 4, paddingBottom: 4}}>
+      <Typography variant="h4" align='center' sx={{fontWeight: 'bold', color: "#333", marginBottom: 4}}>
         Ramos disponibles
-      </h2>
+      </Typography>
       
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(2, 1fr)', 
-        gap: '20px'
-      }}>
+      <Grid container spacing={3}>
         {ramos.map((ramo) => (
-          <div 
-            key={ramo.code}
-            style={{
-              backgroundColor: 'white',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '20px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, boxShadow 0.2s'
-            }}
-            onClick={() => handleRamoClick(ramo.id)}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-            }}
-          >
-            <h3 style={{ 
-              fontSize: '1.3rem', 
-              fontWeight: 'bold', 
-              color: '#2563eb', 
-              marginBottom: '10px' 
-            }}>
-              {ramo.name}
-            </h3>
-            
-            <p style={{ 
-              fontSize: '1rem', 
-              color: '#666', 
-              marginBottom: '15px',
-              lineHeight: '1.4'
-            }}>
-              {ramo.code + " - " + typeOfCourse(ramo.required)}
-            </p>
-            
-            {ramo.difficulty === 0 ? (
-              <p style={{ color: '#666', fontStyle: 'italic' }}>
-                Aún no hay comentarios para este ramo. ¡Sé el primero en compartir tu experiencia!
-              </p>
-            ) : (
-              <div style={{ 
-                fontSize: '0.9rem', 
-                color: '#555',
-                fontWeight: '600'
-              }}>
-                Dificultad: {ramo.difficulty.toFixed()}/7 - {getLabelForLevel(Number(ramo.difficulty.toFixed()))}
-              </div>
-            )
-            }
-          </div>
+          <Grid size={6} key={ramo.code}>
+            <Card
+              onClick={() => handleRamoClick(ramo.id)}
+              sx={{
+                cursor: 'pointer',
+                borderRadius: 3,
+                transition: '0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 4,
+                }
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2563eb', mb: 1 }}>
+                  {ramo.name}
+                </Typography>
+
+                <Typography variant="body2" sx={{ color: '#666', mb: 2 }}>
+                  {ramo.code} — {typeOfCourse(ramo.required)}
+                </Typography>
+                
+                {ramo.difficulty === 0 ? (
+                  <Typography variant="body2" sx={{ color: '#666', fontStyle: 'italic' }}>
+                    Aún no hay comentarios ...
+                  </Typography>
+                ) : (
+                  <Typography variant="body2" sx={{ color: '#555', fontWeight: 600 }}>
+                    Dificultad: {ramo.difficulty.toFixed()}/7 — {getLabelForLevel(Number(ramo.difficulty.toFixed()))}
+                  </Typography>
+                )}
+
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Container>
   );
 };
 

@@ -7,7 +7,7 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import loginService from "./services/login";
 import type { User } from "./Types/Types";
-import { AppBar, Toolbar, Button, Typography, Box, Link as MuiLink, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Link as MuiLink, IconButton } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
