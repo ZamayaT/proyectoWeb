@@ -25,12 +25,12 @@ const createCourse = (newCourse: Ramo) => {
 
 const getOnlyElectives = () => {
   const request = axios.get<Ramo[]>(`${baseUrl}/electives`)
-  return request.then(response => response.data)
+  return request.then(response => response.data? response.data : []);
 }
 
 const getOnlyRequired = () => {
   const request = axios.get<Ramo[]>(`${baseUrl}/required`)
-  return request.then(response => response.data)
+  return request.then(response => response.data);
 }
 
 export default {

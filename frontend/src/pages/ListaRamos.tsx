@@ -32,7 +32,7 @@ const ListaRamos = () => {
       setRamos(data);
     } else if (value === 'elective') {
       const data = await ramosServices.getOnlyElectives();
-      setRamos(data);
+      setRamos(data)
     } else if (value === 'required') {
       const data = await ramosServices.getOnlyRequired();
       setRamos(data);

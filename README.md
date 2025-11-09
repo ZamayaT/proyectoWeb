@@ -1,10 +1,54 @@
-# Dificultad de Ramos DCC App (React + Vite + JSON Server)
+# Dificultad de Ramos DCC App
 
 Aplicación web Dificultad de Ramos DCC con **React** para el frontend y **JSON Server** para simular un backend REST.
 Permite comentar, ver y evaluar la dificultad de los ramos DCC.
 
 Esta aplicación permite a estudiantes del Departamento de Ciencias de la Computación compartir y consultar opiniones sobre los ramos de la universidad. Los comentarios pueden ser anónimos o asociados a un usuario (con autenticación opcional), y la comunidad puede validarlos con “estoy de acuerdo” o “no estoy de acuerdo”. El sistema incluye vistas como listado de ramos, opiniones por ramo, perfil de usuario y un panel de administración para moderadores(en proceso).
 
+
+## Estructura 
+Estructura del estado global (librería usada y stores).
+
+## Rutas
+URLs del proyecto
+
+Frontend → http://localhost:5173
+
+- / → Lista de ramos
+
+- /ramo/:id → Detalle del ramo con comentarios
+
+- /admin → Administrar ramos (crear y eliminar)
+
+- /login → login, logout y register de usuarios
+
+Backend API → http://localhost:3001/api
+
+- GET /api/courses → Obtiene todos los ramos
+
+- GET /api/courses/:id → Obtiene un ramo por ID
+
+- POST /api/courses → Crea un nuevo ramo
+
+- DELETE /api/courses/:id → Elimina un ramo
+
+- POST /api/auth/login → Inicia sesión de usuario
+
+- POST /api/auth/logout → Cerrar sesión de usuario
+
+- POST /api/users → Registra un nuevo usuario
+
+
+
+## Flujo de autenticación
+Flujo de autenticación.
+
+
+## Tests
+Descripción de los tests E2E (herramienta usada, flujos cubiertos).
+
+## Estilos y Diseño
+Librería de estilos utilizada y decisiones de diseño.
 
 
 ## Instalación y ejecución
@@ -44,37 +88,6 @@ Esta aplicación permite a estudiantes del Departamento de Ciencias de la Comput
     cd ../frontend
     npm run dev
 ```
-
- URLs del proyecto
-
-Frontend → http://localhost:5173
-
-- / → Lista de ramos
-
-- /ramo/:id → Detalle del ramo con comentarios
-
-- /admin → Administrar ramos (crear y eliminar)
-
-- /login → login, logout y register de usuarios
-
-Backend API → http://localhost:3001/api
-
-- GET /api/courses → Obtiene todos los ramos
-
-- GET /api/courses/:id → Obtiene un ramo por ID
-
-- POST /api/courses → Crea un nuevo ramo
-
-- DELETE /api/courses/:id → Elimina un ramo
-
-- POST /api/auth/login → Inicia sesión de usuario
-
-- POST /api/auth/logout → Cerrar sesión de usuario
-
-- POST /api/users → Registra un nuevo usuario
-
-
-
 
 ## Scripts disponibles (backend)
 ```bash

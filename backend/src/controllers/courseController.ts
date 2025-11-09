@@ -68,7 +68,7 @@ export const getElectives = async (req: Request, res: Response, next: NextFuncti
     if (courses && courses.length > 0) {
       res.json(courses);
     } else {
-      res.status(404).json({ error: "No se encontraron cursos electivos" });
+      res.json([]);
     }
   } catch (error) {
     next(error);
@@ -82,7 +82,7 @@ export const getRequired = async (req: Request, res: Response, next: NextFunctio
     if (courses && courses.length > 0) {
       res.json(courses);
     } else {
-      res.status(404).json({ error: "No se encontraron cursos obligatorios" });
+      res.json([]);
     }
   } catch (error) {
     next(error);
