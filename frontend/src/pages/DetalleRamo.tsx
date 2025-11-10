@@ -224,6 +224,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
                     return (
                       <Box
                         key={index}
+                        data-testid={`difficulty-${level}`} // para los tests
                         onMouseEnter={() => setHover(level)}
                         onMouseLeave={() => setHover(null)}
                         onClick={() => setNuevaDificultad(level)}
