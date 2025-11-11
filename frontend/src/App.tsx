@@ -57,7 +57,7 @@ function App() {
                 <IconButton color="inherit">
                   <AccountCircleIcon />
                 </IconButton>
-                Sesion
+                Sesión
               </MuiLink>
             </Box>
           </Toolbar>
