@@ -26,6 +26,11 @@ test.describe('Comentarios', () => {
     await expect(page.getByText('Agregar comentario')).toBeVisible();
   });
 
+  // Limpiar después de cada test
+  test.afterEach(async ({ request }) => {
+    await request.post("/api/testing/reset");
+  });
+
   test('debe crear un comentario exitosamente', async ({ page }) => {
     const comentarioTexto = `Este es un comentario de prueba E2E - ${Date.now()}`;
     
@@ -39,8 +44,10 @@ test.describe('Comentarios', () => {
     await page.getByRole('button', { name: 'Publicar comentario' }).click();
     
     await expect(page.getByText(comentarioTexto)).toBeVisible();
+    // FIX: Usar .first() porque puede haber "admin" en múltiples lugares
     await expect(page.getByText('admin').first()).toBeVisible();
-    await expect(page.getByText('Algo difícil (5/7)')).toBeVisible();
+    // FIX: Usar .first() en caso de que haya múltiples elementos con "Algo difícil (5/7)"
+    await expect(page.getByText('Algo difícil (5/7)').first()).toBeVisible();
   });
 
   test('debe crear un comentario anónimo', async ({ page }) => {
@@ -55,6 +62,7 @@ test.describe('Comentarios', () => {
     await page.getByRole('button', { name: 'Publicar comentario' }).click();
     
     await expect(page.getByText(comentarioTexto)).toBeVisible();
+    // FIX: Usar .first() para obtener el PRIMER "Anónimo" dentro de la sección
     const comentariosSection = page.locator('h5').filter({ hasText: 'Comentarios' }).locator('xpath=following-sibling::*[1]');
     await expect(comentariosSection.getByText('Anónimo').first()).toBeVisible();
   });
