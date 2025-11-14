@@ -39,7 +39,7 @@ export default function Login( props : propLogin) {
       if (err.response.status === 404) {
         setMessage('No se encuentra el endpoint /api/login');
       } else {
-        setMessage('Error al contactar el servidor');
+        setMessage(err.response.data.error);
       }
     }
   }
@@ -63,7 +63,7 @@ export default function Login( props : propLogin) {
       setUsername("");
       setPassword("");
 
-    } catch (err: any) {
+    } catch (err : any) {
         // Error de backend
       if (err.response && err.response.data && err.response.data.error) {
         setMessage(err.response.data.error);
