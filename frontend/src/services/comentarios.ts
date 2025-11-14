@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { Comentario } from '../Types/Types';
+import axiosSecure from "../utils/axiosSecure"
 
 // const baseUrl = 'http://localhost:3001';
 const baseUrl = '/api/comments';
@@ -20,7 +21,12 @@ const createComment = (newCourse: DataCreateComentario) => {
   return axios.post<Comentario>(baseUrl, newCourse).then(res => res.data);
 };
 
+const deleteComment = (id: string) => {
+  return axiosSecure.delete(`${baseUrl}/${id}`).then(res => res.data);
+};
+
 export default {
   getComentariosByRamo,
-  createComment
+  createComment,
+  deleteComment
 };

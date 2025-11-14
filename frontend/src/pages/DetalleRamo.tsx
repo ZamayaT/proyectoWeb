@@ -5,8 +5,10 @@ import comentariosService from '../services/comentarios';
 import ramosServices from "../services/courses";
 import type { Ramo, User } from "../Types/Types";
 
-import { Container, Card, CardContent, Typography, Button, Box, Stack, Alert, TextField, Switch, FormControlLabel, Collapse, Divider, Chip, Paper } from '@mui/material';
+import { Container, Card, CardContent, Typography, Button, Box, Stack, Alert, TextField, Switch, FormControlLabel, Collapse, IconButton, Chip, Paper } from '@mui/material';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CloseIcon from "@mui/icons-material/Close";
+
 
 interface propDetalleRamo {
   setUser: (user: User | null) => void,
@@ -71,16 +73,15 @@ const DetalleRamo = (props : propDetalleRamo) => {
     }
 
     const nuevoComentario = {
-      author: anonimo ? null : user?.id || null,
+      author: user?.id || null,
       content: nuevoTexto,
       course: ramo.id,
+      isAnonimo : anonimo,
       votes: nuevaDificultad
     };
 
     try {
       const creado = await comentariosService.createComment(nuevoComentario);
-
-      console.log('Comentario creado:', creado);
 
       setRamo(creado.course as Ramo);
       setComentarios([creado, ...comentarios]);
@@ -91,6 +92,21 @@ const DetalleRamo = (props : propDetalleRamo) => {
       console.error(err);
     }
   };
+
+  const deleteComentario = async (id : string) => {
+    try {
+      const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este comentario  ?");
+      if (!confirmar) return;
+
+      const eliminado = await comentariosService.deleteComment(id);
+      // refrescar lista
+      setRamo(eliminado.course as Ramo)
+      setComentarios(prev => prev.filter(c => c.id !== id))
+      // alert("Curso eliminado correctamente ✅}");
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+    }
+  } 
 
   const [hover, setHover] = useState<number | null>(null);
 
@@ -242,7 +258,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
                   })}
                 </Box>
 
-                <Typography sx={{ fontWeight: "bold" }}>
+                <Typography sx={{ fontWeight: "bold", color: hover || nuevaDificultad ? getColorForLevel(hover || nuevaDificultad ) : 'inherit' }}>
                   {((hover && hover > 0) || nuevaDificultad > 0)
                     ? getLabelForLevel(hover || nuevaDificultad)
                     : "Sin seleccionar"}
@@ -263,7 +279,6 @@ const DetalleRamo = (props : propDetalleRamo) => {
                 onChange={(e) => setNuevoTexto(e.target.value)}
                 fullWidth
                 sx={{ mt: 2 }}
-                required
               />
 
               <Button type="submit" variant="contained" sx={{ mt: 2 }}>
@@ -287,10 +302,26 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
           <Stack spacing={2} sx={{ mt: 2 }}>
             {comentarios.map(c => (
-              <Paper key={c.id} sx={{ p: 2 }}>
+              <Paper key={c.id} sx={{p: 2,position: "relative","&:hover .deleteIcon": {opacity: 1}}}>
+                {(user?.role === "admin" || user?.username === c.author?.username) &&  (
+                  <IconButton
+                    className="deleteIcon"
+                    size="small"
+                    onClick={() => deleteComentario(c.id)}
+                    sx={{
+                      position: "absolute",
+                      top: 4,
+                      right: 4,
+                      opacity: 0,
+                      transition: "opacity 0.2s ease",
+                    }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                )}
                 <Box display="flex" justifyContent="space-between">
                   <Typography fontWeight={600}>
-                    {c.author?.username ?? "Anónimo"}
+                    {c.isAnonimo ? "Anónimo" : c.author?.username }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {new Date(c.createdAt).toLocaleDateString()}
