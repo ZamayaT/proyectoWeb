@@ -44,8 +44,83 @@ Backend API → http://localhost:3001/api
 Flujo de autenticación.
 
 
-## Tests
-Descripción de los tests E2E (herramienta usada, flujos cubiertos).
+## Tests E2E
+
+### Descripción
+Los tests E2E se implementan con **Playwright** en la carpeta independiente `/e2etests/`. 
+
+Cubren 3 flujos principales:
+- **Autenticación**: Login, registro, logout y manejo de sesiones
+- **Acceso protegido**: Verificar que las rutas protegidas funcionan correctamente
+- **Comentarios**: Crear, listar, validar y persistir comentarios
+- **Navegación**: Flujos de navegación entre vistas y redirecciones
+
+### Tests implementados
+
+#### auth.spec.ts (4 tests)
+- ✅ Login con credenciales correctas
+- ✅ Error con credenciales incorrectas
+- ✅ Logout funciona correctamente
+- ✅ Registro de nuevo usuario
+
+#### comments.spec.ts (6 tests)
+- ✅ Crear comentario como usuario registrado
+- ✅ Crear comentario anónimo
+- ✅ Persistencia de comentarios (reload)
+- ✅ Validación de dificultad requerida
+- ✅ Contador de comentarios actualizado
+- ✅ Gestión de múltiples comentarios
+
+#### navigation.spec.ts (8 tests)
+- ✅ Mostrar ramos en la página principal
+- ✅ Navegar a login desde el header
+- ✅ Login correcto y mostrar bienvenida
+- ✅ Navegar de login a lista de ramos
+- ✅ Navegar de lista a detalle de ramo
+- ✅ Volver de detalle a lista
+- ✅ Navegación desde header
+- ✅ Logout funciona correctamente
+
+### Ejecutar tests
+
+**Instalar dependencias:**
+```bash
+cd e2etests
+npm install
+```
+
+**Todos los navegadores (chromium, firefox, webkit):**
+```bash
+npm test
+```
+
+**Solo Chromium (más rápido):**
+```bash
+npm test -- --project chromium
+```
+
+**Modo debug (visual):**
+```bash
+npm test -- --project chromium --debug
+```
+
+**Ver reporte HTML:**
+```bash
+npm run test:report
+```
+
+**Solo un archivo específico:**
+```bash
+npm test -- --project chromium auth.spec.ts
+npm test -- --project chromium comments.spec.ts
+npm test -- --project chromium navigation.spec.ts
+```
+
+### Requisitos para ejecutar tests
+- Backend seeded y corriendo: `npm run seed` -> `npm run dev` (desde `/backend`)
+- Frontend corriendo: `npm run dev` (desde `/frontend`)
+- Endpoint `/api/testing/reset` disponible en modo test para limpiar BD
+
 
 ## Estilos y Diseño
 Librería de estilos utilizada y decisiones de diseño.
@@ -114,5 +189,6 @@ npm run preview  # Previsualiza la build de producción
 ```bash
 ├── backend/              # carpeta para Backend(JSON-server)
 ├── frontend/             # Carpeta para FrontEnd(React)
+├── e2etests/             # Carpeta para E2E testing (Playwright)
 └── README.md
 ```
