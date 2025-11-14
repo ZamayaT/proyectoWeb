@@ -6,6 +6,7 @@ import courseRouter from './routes/courseRoutes';
 import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes'
 import cookieParser from 'cookie-parser'
+import errorHandler from './middleware/errorMiddleware';
 
 dotenv.config();
 
@@ -47,20 +48,6 @@ app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter)
 
 // Middleware de errores
-app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(error);
-  
-  // Manejo de errores de validación de Mongoose
-  if (error.name === 'ValidationError') {
-    return res.status(400).json({ error: error.message });
-  }
-  
-  // Manejo de errores de cast (IDs inválidos)
-  if (error.name === 'CastError') {
-    return res.status(400).json({ error: 'Malformatted ID' });
-  }
-  
-  res.status(500).json({ error: 'Internal server error' });
-});
+app.use(errorHandler);
 
 export default app;

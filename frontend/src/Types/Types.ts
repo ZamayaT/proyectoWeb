@@ -15,6 +15,7 @@ export interface Comentario {
   author: User | null;
   content: string;
   votes: number;
+  isAnonimo : boolean;
   createdAt: string
   updatedAt: string // Formato: "YYYY-MM-DD"
 }

@@ -44,6 +44,30 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
+export const updateCourse = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { code, name, difficulty, required } = req.body;
+
+    const updatedCourse = await CourseModel.findByIdAndUpdate(
+      id,
+      {
+        code,
+        name,
+        required
+      },
+      { new: true } 
+    );
+
+    if (!updatedCourse) return res.status(404).json({ message: "Curso no encontrado" });
+
+    res.json(updatedCourse);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteCourse = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const courseId = req.params.id;
