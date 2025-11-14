@@ -2,12 +2,19 @@ import { useNavigate } from 'react-router-dom';
 import ramosServices from "../services/courses"
 import type { Ramo } from '../Types/Types';
 import { useEffect, useState } from 'react';
-import { Container, Card, CardContent, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Container, Card, CardContent, Typography, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import Grid from "@mui/material/Grid";
 
 const ListaRamos = () => {
   const [ramos, setRamos] = useState<Ramo[]>([]);
   const [filter, setFilter] = useState<'all' | 'elective' | 'required'>('all');
+  const [query, setQuery] = useState('');
+
+  const ramosFilter = ramos.filter((ramo) => {
+      if (!query.trim()) return true;
+      const q = query.toLowerCase();
+      return ramo.name.toLowerCase().includes(q) || ramo.code.toLowerCase().includes(q);
+    })
 
   const navigate = useNavigate();
 
@@ -67,6 +74,18 @@ const ListaRamos = () => {
         Ramos disponibles
       </Typography>
 
+      {/* Buscador */}
+      <TextField
+        label="Buscar ramos"
+        variant="outlined"
+        size="small"
+        fullWidth
+        sx={{ marginBottom: 2 }}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        inputProps={{ 'data-testid': 'search-input' }}
+      />
+
       <FormControl fullWidth sx={{ marginBottom: 3 }}>
         <InputLabel>Filtrar</InputLabel>
         <Select
@@ -81,7 +100,7 @@ const ListaRamos = () => {
       </FormControl>
       
       <Grid container spacing={3}>
-        {ramos.map((ramo) => (
+        {ramosFilter.map((ramo) => (
           <Grid size={6} key={ramo.code}>
             <Card
               onClick={() => handleRamoClick(ramo.id)}
