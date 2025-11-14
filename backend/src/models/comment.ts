@@ -6,12 +6,14 @@ interface IComment extends Document {
   course: mongoose.Types.ObjectId;
   content: string;
   votes: number;
+  isAnonimo : boolean;
 }
 
 const commentSchema = new Schema<IComment>({
   author: { type: Schema.Types.ObjectId, ref: "User", default: null },
   course: { type: Schema.Types.ObjectId, ref: "Course", required: true },
-  content: { type: String, required: true, minlength: 1, maxLength: 1000 },
+  isAnonimo: { type: Boolean},
+  content: { type: String,  maxLength: 1000 },
   votes: { type: Number, min: 1, max: 7, required: true, validate: {
     validator: function(v: number) {
       return v >= 0 && Number.isInteger(v);
@@ -49,7 +51,7 @@ commentSchema.post("findOneAndDelete", async function (doc) {
   const { id, difficulty, totalCommnets} = courseData;
 
   // Nuevo promedio con fórmula incremental
-  const newTotal = (totalCommnets - 1 < 0) ? totalCommnets - 1 : 0;
+  const newTotal = (totalCommnets - 1 > 0) ? totalCommnets - 1 : 0;
   if (newTotal === 0) {
     await CourseModel.findByIdAndUpdate(id, {
       difficulty: 0,
