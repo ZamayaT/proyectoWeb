@@ -30,15 +30,15 @@ commentSchema.post("save", async function (doc) {
   const courseData = await CourseModel.findById(course);
 
   if (!courseData) return;
-  const { id, difficulty, totalCommnets} = courseData;
+  const { id, difficulty, totalComments} = courseData;
 
   // Nuevo promedio con fórmula incremental
-  const newTotal = totalCommnets + 1;
-  const newDificulty = ((difficulty * totalCommnets) + votes) / (newTotal);
+  const newTotal = totalComments + 1;
+  const newDificulty = ((difficulty * totalComments) + votes) / (newTotal);
 
   await CourseModel.findByIdAndUpdate(id, {
     difficulty: newDificulty,
-    totalCommnets: newTotal,
+    totalComments: newTotal,
   });
 });
 
@@ -48,22 +48,22 @@ commentSchema.post("findOneAndDelete", async function (doc) {
   const courseData = await CourseModel.findById(course);
 
   if (!courseData) return;
-  const { id, difficulty, totalCommnets} = courseData;
+  const { id, difficulty, totalComments} = courseData;
 
   // Nuevo promedio con fórmula incremental
-  const newTotal = (totalCommnets - 1 > 0) ? totalCommnets - 1 : 0;
+  const newTotal = (totalComments - 1 > 0) ? totalComments - 1 : 0;
   if (newTotal === 0) {
     await CourseModel.findByIdAndUpdate(id, {
       difficulty: 0,
-      totalCommnets: 0,
+      totalComments: 0,
     });
     return;
   }
   else { 
-    const newDificulty = ((difficulty * totalCommnets) - votes) / (newTotal);
+    const newDificulty = ((difficulty * totalComments) - votes) / (newTotal);
     await CourseModel.findByIdAndUpdate(id, {
       difficulty: newDificulty,
-      totalCommnets: newTotal,
+      totalComments: newTotal,
     });
   }
 });
