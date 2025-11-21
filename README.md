@@ -18,7 +18,7 @@ Frontend → http://localhost:5173
 
 - /ramo/:id → Detalle del ramo con comentarios
 
-- /admin → Administrar ramos (crear y eliminar)
+- /admin → Administrar ramos (crear y eliminar). Ruta protegida.
 
 - /login → login, logout y register de usuarios
 

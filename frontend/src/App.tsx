@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import ListaRamos from './pages/ListaRamos';
 import DetalleRamo from './pages/DetalleRamo';
 import Login from './pages/Login';
@@ -68,7 +68,14 @@ function App() {
             <Route path="/" element={<ListaRamos />} />
             <Route path="/ramo/:id" element={<DetalleRamo setUser={(u) => setUser(u)} user={user}/>} />
             <Route path="/login" element={<Login setUser={(u) => setUser(u)} user={user}/>} />
-            <Route path="/admin" element={<Admin />} />
+            <Route 
+              path="/admin" 
+              element={
+                (user && user.role === "admin") 
+                  ? <Admin /> 
+                  : <Navigate to={user ? "/" : "/login"} replace />
+              } 
+            />
           </Routes>
         </main>
       </Box>
