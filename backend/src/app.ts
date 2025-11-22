@@ -50,9 +50,7 @@ app.use('/api/auth', authRouter);
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = express.Router();
   
-  testingRouter.post('/reset', async (req, res) => {
-    console.log('🧹 Limpiando base de datos para tests...');
-    
+ testingRouter.post('/reset', async (req, res) => {
     try {
       const { CommentModel } = await import('./models/comment');
       const { UserModel } = await import('./models/user');
@@ -60,35 +58,30 @@ if (process.env.NODE_ENV === 'test') {
       const bcrypt = await import('bcrypt');
       const { default: ramos } = await import('../scripts/ramos');
       
-      // 1. Eliminar todos los documentos
       await CommentModel.deleteMany({});
       await UserModel.deleteMany({});
       await CourseModel.deleteMany({});
       
-      // 2. Recrear los ramos
-      await CourseModel.insertMany(ramos.map(r => ({
+      await CourseModel.insertMany(ramos.map((r: { code: string; name: string; required: boolean }) => ({
         ...r,
         difficulty: 0,
         totalComments: 0
       })));
       
-      // 3. Recrear usuarios de prueba
       const saltRounds = 10;
-      
       const adminHash = await bcrypt.default.hash('admin123', saltRounds);
       const user1Hash = await bcrypt.default.hash('user123', saltRounds);
       const user2Hash = await bcrypt.default.hash('user234', saltRounds);
-            
+      
       await UserModel.create([
         { username: 'admin', password: adminHash, role: 'admin' },
         { username: 'user1', password: user1Hash, role: 'user' },
         { username: 'user2', password: user2Hash, role: 'user' }
       ]);
       
-      console.log('✅ Base de datos reseteada: ramos y usuarios recreados');
       res.status(204).end();
     } catch (error) {
-      console.error('❌ Error al resetear la base de datos:', error);
+      console.error('❌ Error en reset:', error);
       res.status(500).json({ error: 'Error al resetear la base de datos' });
     }
   });
