@@ -76,7 +76,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
       author: user?.id || null,
       content: nuevoTexto,
       course: ramo.id,
-      isAnonimo : anonimo,
+      isAnonimo : !user ? true : anonimo,
       votes: nuevaDificultad
     };
 
@@ -303,7 +303,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
           <Stack spacing={2} sx={{ mt: 2 }}>
             {comentarios.map(c => (
               <Paper key={c.id} sx={{p: 2,position: "relative","&:hover .deleteIcon": {opacity: 1}}}>
-                {(user?.role === "admin" || user?.username === c.author?.username) &&  (
+                { user && (user?.role === "admin" || user?.username === c.author?.username) &&    (
                   <IconButton
                     className="deleteIcon"
                     size="small"
