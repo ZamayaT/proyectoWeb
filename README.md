@@ -1,7 +1,6 @@
 # Dificultad de Ramos DCC App
 
-Aplicación web Dificultad de Ramos DCC con **React** para el frontend y **JSON Server** para simular un backend REST.
-Permite comentar, ver y evaluar la dificultad de los ramos DCC.
+Aplicación web Dificultad de Ramos DCC con **React + Vite** para el frontend y **Node + express + Mongoose** para el backend. Permite comentar, ver y evaluar la dificultad de los ramos DCC.
 
 Esta aplicación permite a estudiantes del Departamento de Ciencias de la Computación compartir y consultar opiniones sobre los ramos de la universidad. Los comentarios pueden ser anónimos o asociados a un usuario (con autenticación opcional), y la comunidad puede validarlos con “estoy de acuerdo” o “no estoy de acuerdo”. El sistema incluye vistas como listado de ramos, opiniones por ramo, perfil de usuario y un panel de administración para moderadores(en proceso).
 
@@ -16,9 +15,9 @@ Frontend → http://localhost:5173
 
 - / → Lista de ramos
 
-- /ramo/:id → Detalle del ramo con comentarios
+- /ramo/:id → Detalle del ramo con comentarios(crear y eliminar)
 
-- /admin → Administrar ramos (crear y eliminar)
+- /admin → Administrar ramos (crear, editar y eliminar)
 
 - /login → login, logout y register de usuarios
 
@@ -26,11 +25,23 @@ Backend API → http://localhost:3001/api
 
 - GET /api/courses → Obtiene todos los ramos
 
+- GET /api/courses/electives → Obtener todos los ramos electivos
+
+- GET /api/courses/required → Obtener todos los ramos obligatorio
+
 - GET /api/courses/:id → Obtiene un ramo por ID
 
-- POST /api/courses → Crea un nuevo ramo
+- PUT /api/courses/:id → Modifica un ramo por ID (solo rol admin)
 
-- DELETE /api/courses/:id → Elimina un ramo
+- DELETE /api/courses/:id → Elimina un ramo por ID (solo rol admin)
+
+- POST /api/courses → Crea un nuevo ramo (solo rol admin)
+
+- GET /api/comments/course/:id → Obtiene todos los comentarios asociados a un curso
+
+- POST /api/comments → Crea un comentario nuevo
+
+- DELETE /api/comments/:id → Elimina un comentario (rol admin o propietario)
 
 - POST /api/auth/login → Inicia sesión de usuario
 
@@ -71,6 +82,7 @@ Librería de estilos utilizada y decisiones de diseño.
 4. Configurar variables de entorno(cambiar nombre)
 ```bash
     .env.example -> .env
+    cp .env.example .env
 ```
 
 5. (Opcional pero recomendado) Poblar la base de datos con ramos de ejemplo: 
@@ -94,9 +106,12 @@ Librería de estilos utilizada y decisiones de diseño.
 npm run dev      # Levanta el servidor en modo desarrollo con nodemon
 npm start        # Levanta el servidor en modo producción
 npm run seed     # Poblado inicial de la base de datos con ramos
+npm run build    # Crea una built del backend para produccion
+npm run build:ui # Crea una built del frontend para produccion(linux)
+npm run buildwindows:ui # Crea una built del frontend para produccion(windows)
 ```
 
-## Scripts disponibles (backend)
+## Scripts disponibles (frontend)
 ```bash
 npm run dev      # Levanta la app en modo desarrollo
 npm run build    # Genera la build de producción
@@ -104,15 +119,29 @@ npm run preview  # Previsualiza la build de producción
 ```
 
 
-## Tecnologías utilizadas
-- [Vite](https://vitejs.dev/) – Bundler y dev server ultrarrápido
-- [React](https://react.dev/) – Biblioteca para interfaces de usuario
-- [JSON Server](https://github.com/typicode/json-server) – API fake REST para simular backend
-
-
 ## Estructura del proyecto
 ```bash
 ├── backend/              # carpeta para Backend(JSON-server)
 ├── frontend/             # Carpeta para FrontEnd(React)
+├── E2E/                  # Carpeta para tests(E2E)
 └── README.md
 ```
+
+
+
+##  Tecnologías utilizadas
+
+### **Frontend**
+- React + Vite
+- React Router
+- Axios
+- Mui UI (si corresponde)
+
+### **Backend**
+- Node.js + Express
+- Mongoose (MongoDB)
+- JWT para autenticación
+- Bcrypt para hashing de contraseñas
+- Dotenv
+
+---
