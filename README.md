@@ -97,6 +97,18 @@ npm run preview  # Previsualiza la build de producción
 - [JSON Server](https://github.com/typicode/json-server) – API fake REST para simular backend
 
 
+## Estado global (Redux)
+La aplicación usa **Redux Toolkit** junto con **react-redux** para manejar el estado global del frontend.
+
+- Slices:
+    - `auth`: maneja la sesión (login, logout, `loading`, `error`).
+    - `courses`: lista de ramos, operaciones de CRUD.
+
+- Flujo:
+    1. Al iniciar la app `App.tsx` despacha `restoreLogin()` y `fetchCourses()` para poblar el store.
+    2. `Login.tsx` despacha `login()` que llama al backend; si tiene éxito, se actualiza `auth` y se recupera el perfil del usuario.
+    3. Las rutas protegidas usan `state.auth` para controlar visibilidad o redirecciones.
+    
 ## Estructura del proyecto
 ```bash
 ├── backend/              # carpeta para Backend(JSON-server)
