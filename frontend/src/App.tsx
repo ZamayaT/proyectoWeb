@@ -4,10 +4,21 @@ import DetalleRamo from './DetalleRamo';
 import Login from './Login';
 import Admin from './Admin';
 import './App.css';
+import { useEffect } from 'react'
+import { useAppDispatch } from './store/hooks'
+import { restoreLogin } from './store/thunks/authThunks'
+import { fetchCourses } from './store/thunks/coursesThunks'
 
 // Para correr, npm run dev en frontend y npx json-server --port 3001 db.json
 
 function App() {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(restoreLogin())
+    dispatch(fetchCourses())
+  }, [dispatch])
+  
   return (
     <Router>
       <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', width: '100%' }}>
