@@ -36,7 +36,6 @@ const ModalAdmin = (props : propModalAdmin) => {
             alert("Curso actualizado correctamente ✅}");
 
         } catch (error) {
-            console.log("aquii??")
             console.error("Error al actualizar:", error);
         }
     }
@@ -66,6 +65,11 @@ const ModalAdmin = (props : propModalAdmin) => {
                 <FormControlLabel
                     control={ <Checkbox checked={isRequired} onChange={() => setIsRequired(!isRequired)} /> }
                     label="Obligatorio"
+                    sx={{
+                        "& .MuiFormControlLabel-label": {
+                            color: "#333",
+                        },
+                    }}
                 />
 
                 <Button variant="contained" onClick={() => updateCourse()}> Actualizar </Button>

@@ -61,6 +61,11 @@ Descripción de los tests E2E (herramienta usada, flujos cubiertos).
 ## Estilos y Diseño
 Librería de estilos utilizada y decisiones de diseño.
 
+La librería de estilos utilizada fue **MUI**, que se integró directamente al frontend para mantener el estilo y diseño simple de los mockups realizados en los hitos anteriores, con el color principal siendo una azul claro y la fuente de letra prinicipal *Roboto*.
+
+Para la vista principal (lista de ramos) se mantuvo un diseño simple de trajetas con la información esencial de los ramos: nombre, código, calificación de dificultad y tipo (obligatorio o electivo). Esta vista también contiene filtros de tipo, nombre y cófigo. 
+
+También se incluyó una vista más detallada de un ramo en específico, que permite acceder a los comentarios creados sobre el ramo (donde cualquiera pude comnetar) además de dar la opción de hacer una publicaión bajo el post, considerando esta funcionalidad.
 
 ## Instalación y ejecución
 1. Clonar el repositorio: 
@@ -135,7 +140,7 @@ npm run preview  # Previsualiza la build de producción
 - React + Vite
 - React Router
 - Axios
-- Mui UI (si corresponde)
+- Mui UI
 
 ### **Backend**
 - Node.js + Express

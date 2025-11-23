@@ -117,7 +117,6 @@ export default function Admin() {
                 control={ <Checkbox checked={isRequired} onChange={() => setIsRequired(!isRequired)} /> }
                 label="Obligatorio"
               />
-
               <Button variant="contained" onClick={addCourse}> Crear ramo </Button>
             </Stack>
           </CardContent>
