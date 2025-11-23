@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from './store/hooks'
 import { login as loginThunk, logout as logoutThunk, restoreLogin } from './store/thunks/authThunks'
 import loginService from './services/login'
-import type { User } from './Types'
+import type { User } from './Types/Types'
 
 export default function Login() {
   const [username, setUsername] = useState('')

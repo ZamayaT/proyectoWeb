@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { Ramo } from '../../Types'
+import type { Ramo } from '../../Types/Types'
 
 interface CoursesState {
   courses: Ramo[]
