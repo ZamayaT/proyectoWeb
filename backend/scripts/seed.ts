@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import {CourseModel} from "../src/models/course"; // ajustá según tu estructura
 import {UserModel} from "../src/models/user";
+import {CommentModel} from "../src/models/comment";
 import ramos from "./ramos";
 import bcrypt from "bcrypt"
 import config from "../src/utils/config"
@@ -18,6 +19,7 @@ const seed = async () => {
     // Limpia colecciones antiguas
     await CourseModel.deleteMany({});
     await UserModel.deleteMany({});
+    await CommentModel.deleteMany({});
 
     // Inserta datos iniciales
     const courses = await CourseModel.insertMany(ramos);
@@ -27,7 +29,7 @@ const seed = async () => {
 
     const admin = new UserModel({
         username: config.ADMIN_USER,
-        email: config.ADMIN_EMAIL,
+        role: config.ROLES.ADMIN,
         password: passwordHash,
     });
 

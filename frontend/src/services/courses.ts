@@ -1,12 +1,13 @@
 import axios from "axios";
 // import axiosSecure from "../utils/axiosSecure";
-import type {Ramo} from "../Types";
+import type {Ramo} from "../Types/Types";
+import axiosSecure from "../utils/axiosSecure"
 
 const baseUrl = '/api/courses';
 
 const getAll = () => {
-    const request = axios.get<Ramo[]>(baseUrl)
-    return request.then(response => response.data)
+  const request = axios.get<Ramo[]>(baseUrl)
+  return request.then(response => response.data)
 }
 
 const getCourse = (id: string) => {
@@ -14,18 +15,34 @@ const getCourse = (id: string) => {
   return request.then(response => response.data)
 }
 
-
 const deleteCourse = (id: string) => {
-  return axios.delete(`${baseUrl}/${id}`).then(res => res.data);
+  return axiosSecure.delete(`${baseUrl}/${id}`).then(res => res.data);
 };
 
 const createCourse = (newCourse: Ramo) => {
-  return axios.post<Ramo>(baseUrl, newCourse).then(res => res.data);
+  return axiosSecure.post<Ramo>(baseUrl, newCourse).then(res => res.data);
 };
+
+const updateCourse = (id : string, newCourse : Ramo) => {
+  return axiosSecure.put(`${baseUrl}/${id}`, newCourse).then(res => res.data);
+}
+
+const getOnlyElectives = () => {
+  const request = axios.get<Ramo[]>(`${baseUrl}/electives`)
+  return request.then(response => response.data? response.data : []);
+}
+
+const getOnlyRequired = () => {
+  const request = axios.get<Ramo[]>(`${baseUrl}/required`)
+  return request.then(response => response.data);
+}
 
 export default {
   getAll,
   getCourse,
   deleteCourse,
-  createCourse
+  createCourse,
+  updateCourse,
+  getOnlyElectives,
+  getOnlyRequired
 };

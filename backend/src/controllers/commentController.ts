@@ -2,14 +2,12 @@ import express from "express";
 import { Request, Response, NextFunction, response } from 'express';
 import { CommentModel } from "../models/comment"
 
-const router = express.Router();
-
 
 export const getCommentsByCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Obtenemos el id del ramo asociado a los comentarios buscados
         const courseId = req.params.id;
-        const comments = await CommentModel.find({ course: courseId });
+        const comments = await CommentModel.find({ course: courseId }).populate('author', {username:1})
 
         res.json(comments);
 
@@ -20,17 +18,21 @@ export const getCommentsByCourse = async (req: Request, res: Response, next: Nex
 
 export const createComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-        const { author, course, content } = req.body;
+        const { author, course, content, votes, isAnonimo } = req.body;
 
         // Si se quiere mantener el author anónimo, se puede mandar como nulo
         const comment = new CommentModel({
-            author,
-            course,
-            content,
+            author : author,
+            course : course,
+            content : content,
+            votes : votes,
+            isAnonimo : isAnonimo,
         });
 
         const savedComment = await comment.save();
+
+        await savedComment.populate("author", {username:1});
+        await savedComment.populate("course");
 
         res.status(201).json(savedComment);
         
@@ -38,3 +40,21 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 };
+
+export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const commentId = req.params.id;
+        const deletedComment = await CommentModel.findByIdAndDelete(commentId);
+        
+        if (!deletedComment) {
+            return res.status(404).json({ error: "Comment not found" });
+        }
+
+        await deletedComment.populate("course");
+
+        res.status(201).json(deletedComment);
+    } catch (error) {
+        next(error);
+    }
+
+}

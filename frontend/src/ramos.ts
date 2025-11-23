@@ -1,7 +1,9 @@
-import type { Ramo } from './Types';
+// import type { Ramo } from './Types/Types';
 
 // Datos estáticos de los ramos DCC
-export const ramos: Ramo[] = [
+// export const ramos: Ramo[] = [
+export const ramos = [
+
   {
     id: "1", 
     code: "CC1002",

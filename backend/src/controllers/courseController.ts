@@ -44,6 +44,30 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
+export const updateCourse = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { code, name, difficulty, required } = req.body;
+
+    const updatedCourse = await CourseModel.findByIdAndUpdate(
+      id,
+      {
+        code,
+        name,
+        required
+      },
+      { new: true } 
+    );
+
+    if (!updatedCourse) return res.status(404).json({ message: "Curso no encontrado" });
+
+    res.json(updatedCourse);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteCourse = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const courseId = req.params.id;
@@ -54,6 +78,36 @@ export const deleteCourse = async (req: Request, res: Response, next: NextFuncti
     }
 
     res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Funciones para buscar cursos según filtros
+export const getElectives = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const courses = await CourseModel.find({ required: false });
+
+    if (courses && courses.length > 0) {
+      res.json(courses);
+    } else {
+      res.json([]);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getRequired = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const courses = await CourseModel.find({ required: true });
+
+    if (courses && courses.length > 0) {
+      res.json(courses);
+    } else {
+      res.json([]);
+    }
   } catch (error) {
     next(error);
   }

@@ -27,7 +27,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         secure: process.env.NODE_ENV === "production",
       });
 
-      res.status(200).send({ username: user.username });
+      res.status(200).send({ id: user.id, username: user.username, role : user.role});
     }
   } else {
     res.status(401).json({error: "invalid username or password"});
@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
   const body = req.body;
-  const user = await UserModel.findById(req.userId);
+  const user = await UserModel.findById(req.userId).select('-password');
   res.status(200).json(user);
 };
 

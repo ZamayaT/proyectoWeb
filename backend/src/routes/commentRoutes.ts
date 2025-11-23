@@ -1,5 +1,7 @@
 import express from "express";
-import { getCommentsByCourse, createComment } from "../controllers/commentController";
+import { getCommentsByCourse, createComment, deleteComment } from "../controllers/commentController";
+import { authenticate, verifyCommentOwnerOrAdmin} from "../middleware/authMiddleware";
+import config from "../utils/config";
 
 const router = express.Router();
 
@@ -8,5 +10,8 @@ router.get("/course/:id", getCommentsByCourse);
 
 // Crea un comentario
 router.post("/", createComment);
+
+// Eliiminar un comentario
+router.delete("/:id", authenticate, verifyCommentOwnerOrAdmin, deleteComment);
 
 export default router;
