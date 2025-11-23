@@ -13,6 +13,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.10.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.8",
@@ -21,7 +22,9 @@
     "axios": "^1.12.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.1"
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.9.1",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -31,6 +34,7 @@
     "@types/jsdom": "^21.1.7",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "@types/redux": "^3.6.31",
     "@vitejs/plugin-react": "^5.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",

@@ -4,6 +4,9 @@ import DetalleRamo from './pages/DetalleRamo';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './App.css';
+import { useAppDispatch } from './store/hooks'
+import { restoreLogin } from './store/thunks/authThunks'
+import { fetchCourses } from './store/thunks/coursesThunks'
 import { useEffect, useState } from 'react';
 import loginService from "./services/login";
 import type { User } from "./Types/Types";
@@ -15,6 +18,13 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 // Para correr, npm run dev en frontend y npx json-server --port 3001 db.json
 
 function App() {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(restoreLogin())
+    dispatch(fetchCourses())
+  }, [dispatch])
+  
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => { 
