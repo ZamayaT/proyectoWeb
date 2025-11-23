@@ -10,7 +10,8 @@
     "seed": "ts-node scripts/seed.ts",
     "test": "cross-env NODE_ENV=test tsx --test --test-concurrency=1 tests/**/*.test.ts",
     "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
-    "buildwindows:ui": "rmdir /s /q dist && cd ..\\frontend && npm run build && xcopy dist ..\\backend\\dist /E /I /Y"
+    "buildwindows:ui": "rmdir /s /q dist && cd ..\\frontend && npm run build && xcopy dist ..\\backend\\dist /E /I /Y",
+    "start:test": "cross-env NODE_ENV=test ts-node-dev src/index.ts"
   },
   "dependencies": {
     "@types/mongoose": "^5.11.96",

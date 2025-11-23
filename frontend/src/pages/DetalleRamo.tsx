@@ -95,7 +95,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
   const deleteComentario = async (id : string) => {
     try {
-      const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este comentario  ?");
+      const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este comentario?");
       if (!confirmar) return;
 
       const eliminado = await comentariosService.deleteComment(id);
@@ -240,6 +240,7 @@ const DetalleRamo = (props : propDetalleRamo) => {
                     return (
                       <Box
                         key={index}
+                        data-testid={`difficulty-${level}`} // para los tests
                         onMouseEnter={() => setHover(level)}
                         onMouseLeave={() => setHover(null)}
                         onClick={() => setNuevaDificultad(level)}
@@ -302,9 +303,14 @@ const DetalleRamo = (props : propDetalleRamo) => {
 
           <Stack spacing={2} sx={{ mt: 2 }}>
             {comentarios.map(c => (
-              <Paper key={c.id} sx={{p: 2,position: "relative","&:hover .deleteIcon": {opacity: 1}}}>
+              <Paper 
+                key={c.id} 
+                data-testid={`comment-paper-${c.id}`} // para los tests
+                sx={{p: 2,position: "relative","&:hover .deleteIcon": {opacity: 1}}}
+              >
                 { user && (user?.role === "admin" || user?.username === c.author?.username) &&    (
                   <IconButton
+                    data-testid={`delete-comment-${c.id}`} // para los tests
                     className="deleteIcon"
                     size="small"
                     onClick={() => deleteComentario(c.id)}

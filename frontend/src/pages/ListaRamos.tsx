@@ -103,6 +103,7 @@ const ListaRamos = () => {
         {ramosFilter.map((ramo) => (
           <Grid size={6} key={ramo.code}>
             <Card
+              data-testid={`ramo-card-${ramo.code}`} // para e2e testing
               onClick={() => handleRamoClick(ramo.id)}
               sx={{
                 cursor: 'pointer',

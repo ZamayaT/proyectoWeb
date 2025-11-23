@@ -137,6 +137,7 @@ export default function Login( props : propLogin) {
             </Typography>
 
             <Button
+              data-testid="logout-button"
               variant="contained"
               color="error"
               fullWidth
