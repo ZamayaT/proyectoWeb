@@ -184,13 +184,24 @@ npm test -- --project chromium course-crud.spec.ts
 **Nota**: Los tests se ejecutan con `workers: 1` para evitar race conditions en la base de datos.
 
 ## Estilos y Diseño
-Librería de estilos utilizada y decisiones de diseño.
+La librería de estilos utilizada en el proyecto fue Material UI (MUI). Se eligió por sobre otras opciones debido a su integración simple y nativa con React, que permitió mantener los estilos establecidos por los mockups presentados en los hitos anteriores.
 
-La librería de estilos utilizada fue **MUI**, que se integró directamente al frontend para mantener el estilo y diseño simple de los mockups realizados en los hitos anteriores, con el color principal siendo una azul claro y la fuente de letra prinicipal *Roboto*.
+Para el diseño general de la aplicación, se decidió mantener una interfaz simple y fácil de navegar, que permitiera presentar la información necesaria sin abrumar a los usuarios. Para esto se escogieron colores más neutros para el contenido textual, agregando justo el color necesario para resaltar ciertos títulos y elementos interactivos; como por ejemplo el color rojo para destacar acciones de cierre y borrado.
 
-Para la vista principal (lista de ramos) se mantuvo un diseño simple de trajetas con la información esencial de los ramos: nombre, código, calificación de dificultad y tipo (obligatorio o electivo). Esta vista también contiene filtros de tipo, nombre y cófigo. 
+Además, se incluyeron efectos visuales típicos para mejorar la experiencia de usuario; el resaltado de los elementos al pasar/mover el cursor por encima, transiciones suaves de los distintos elementos gráficos (como menú desplegables) y más.
 
-También se incluyó una vista más detallada de un ramo en específico, que permite acceder a los comentarios creados sobre el ramo (donde cualquiera pude comnetar) además de dar la opción de hacer una publicaión bajo el post, considerando esta funcionalidad.
+Todo esto considerando una distribución *responsive*, que se ajusta automaticamente a los distintos tamaños de pantalla, permitiendo mantener una configuración uniforme.
+
+### Listado de Ramos (página principal)
+
+Para el contenido de la página principal, la lista de ramos, se decidió ocupar tarjetas (Card) para presentar la información más importante de cada ramo de manera simple, lo que permite visualizar: Nombre, Código, Tipo y Dificultad.
+
+Además, se integraron filtros para poder buscar por nombre o código (filtro textual genérico) o categorizar según rl tipo (obligatorio o electivo)
+
+### Detalle de un Ramo
+Para la vista específica de un ramo se mantuvo un diseño simple y centrado en mostrar solo la información esencial. En la parte superior se muestran los datos principales del curso, seguidos de una lista de comentarios realizados por los usuarios. Cada comentario incluye su respectiva calificación de dificultad, la cual se resalta con un color distinto según el nivel seleccionado.
+
+Además, esta vista incorpora la opción de publicar un nuevo comentario, ya sea de manera anónima o utilizando el nombre de usuario asociado a la sesión actual. Este formulario se encuentra dentro de un menú desplegable inicialmente cerrado, con el objetivo de evitar que ocupe espacio innecesario, manteniendo la interfaz limpia.
 
 ## Instalación y ejecución
 1. Clonar el repositorio: 
@@ -283,7 +294,7 @@ La aplicación usa **Redux Toolkit** junto con **react-redux** para manejar el e
 - React + Vite
 - React Router
 - Axios
-- Mui UI
+- [Material UI (MUI)](https://mui.com/)
 
 ### **Backend**
 - Node.js + Express
