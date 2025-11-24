@@ -2,11 +2,9 @@
 
 Aplicación web Dificultad de Ramos DCC con **React + Vite** para el frontend y **Node + express + Mongoose** para el backend. Permite comentar, ver y evaluar la dificultad de los ramos DCC.
 
-Esta aplicación permite a estudiantes del Departamento de Ciencias de la Computación compartir y consultar opiniones sobre los ramos de la universidad. Los comentarios pueden ser anónimos o asociados a un usuario (con autenticación opcional), y la comunidad puede validarlos con “estoy de acuerdo” o “no estoy de acuerdo”. El sistema incluye vistas como listado de ramos, opiniones por ramo, perfil de usuario y un panel de administración para moderadores(en proceso).
+Esta aplicación permite a estudiantes del Departamento de Ciencias de la Computación compartir y consultar opiniones sobre los ramos de la universidad. Los comentarios pueden ser anónimos o asociados a un usuario (con autenticación opcional), y la comunidad puede validarlos con “estoy de acuerdo” o “no estoy de acuerdo”. El sistema incluye vistas como listado de ramos, opiniones por ramo, perfil de usuario y un panel de administración para moderadores (en proceso).
 
 
-## Estructura 
-Estructura del estado global (librería usada y stores).
 
 ## Rutas
 URLs del proyecto
@@ -51,9 +49,82 @@ Backend API → http://localhost:3001/api
 
 
 
-## Flujo de autenticación
-Flujo de autenticación.
+## Flujo de Autenticación
 
+La aplicación implementa un sistema de autenticación basado en **JWT + CSRF tokens** para máxima seguridad.
+
+### Arquitectura de Seguridad
+
+#### 1. **Autenticación con JWT (HTTP-only cookies)**
+- El backend genera un token JWT al hacer login y lo envía como **cookie HTTP-only**
+- El token no es accesible desde JavaScript (protección contra XSS)
+- Se envía automáticamente en cada petición con `withCredentials: true`
+
+#### 2. **Protección CSRF**
+- Además del JWT, el backend envía un **CSRF token** en el header `X-CSRF-Token`
+- El frontend guarda este token en `localStorage`
+- Todas las peticiones POST/PUT/DELETE incluyen el CSRF token mediante `axiosSecure` (interceptor)
+
+### Flujo Completo
+
+#### Login
+1. Usuario ingresa credenciales en `/login`
+2. Frontend envía `POST /api/auth/login` con username/password
+3. Backend valida y responde con:
+   - JWT en cookie HTTP-only (`Set-Cookie`)
+   - CSRF token en header `X-CSRF-Token`
+4. Frontend guarda el CSRF token en `localStorage`
+5. Redux actualiza el estado con `setUser(user)`
+
+#### Restauración de Sesión
+1. Al cargar la app, `App.tsx` ejecuta `restoreLogin()`
+2. Frontend envía `GET /api/auth/login/me` con:
+   - JWT (automático vía cookie)
+   - CSRF token (vía header)
+3. Si es válido, backend devuelve datos del usuario
+4. Redux actualiza el estado con `setUser(user)`
+
+#### Peticiones Protegidas
+- Todas las operaciones sensibles usan `axiosSecure`:
+  - Crear/editar/eliminar cursos (admin)
+  - Crear/eliminar comentarios
+  - Operaciones de autenticación
+- `axiosSecure` automáticamente incluye el CSRF token en headers
+
+#### Logout
+1. Usuario hace clic en "Logout"
+2. Frontend envía `POST /api/auth/logout`
+3. Backend invalida la cookie JWT
+4. Frontend elimina el CSRF token de `localStorage`
+5. Redux ejecuta `clearUser()`
+
+### Protección de Rutas
+
+#### Ruta Protegida: `/admin`
+```tsx
+<Route 
+  path="/admin" 
+  element={
+    (user && user.role === "admin") 
+      ? <Admin /> 
+      : <Navigate to={user ? "/" : "/login"} replace />
+  } 
+/>
+```
+
+- Solo usuarios con `role: "admin"` pueden acceder
+- Usuarios sin autenticar son redirigidos a `/login`
+- Usuarios autenticados sin permisos van a `/`
+
+#### Rutas Públicas
+- `/` - Lista de ramos (sin autenticación)
+- `/ramo/:id` - Detalle de ramo (comentarios anónimos permitidos)
+- `/login` - Página de autenticación
+
+### Manejo de Errores
+- Credenciales incorrectas → mensaje de error en UI
+- Token expirado → redirección automática a login
+- Sin permisos → redirección según rol
 
 ## Tests E2E
 
@@ -196,7 +267,7 @@ Todo esto considerando una distribución *responsive*, que se ajusta automaticam
 
 Para el contenido de la página principal, la lista de ramos, se decidió ocupar tarjetas (Card) para presentar la información más importante de cada ramo de manera simple, lo que permite visualizar: Nombre, Código, Tipo y Dificultad.
 
-Además, se integraron filtros para poder buscar por nombre o código (filtro textual genérico) o categorizar según rl tipo (obligatorio o electivo)
+Además, se integraron filtros para poder buscar por nombre o código (filtro textual genérico) o categorizar según el tipo (obligatorio o electivo)
 
 ### Detalle de un Ramo
 Para la vista específica de un ramo se mantuvo un diseño simple y centrado en mostrar solo la información esencial. En la parte superior se muestran los datos principales del curso, seguidos de una lista de comentarios realizados por los usuarios. Cada comentario incluye su respectiva calificación de dificultad, la cual se resalta con un color distinto según el nivel seleccionado.
@@ -244,12 +315,13 @@ Además, esta vista incorpora la opción de publicar un nuevo comentario, ya sea
 
 ## Scripts disponibles (backend)
 ```bash
-npm run dev      # Levanta el servidor en modo desarrollo con nodemon
-npm start        # Levanta el servidor en modo producción
-npm run seed     # Poblado inicial de la base de datos con ramos
-npm run build    # Crea una built del backend para produccion
-npm run build:ui # Crea una built del frontend para produccion(linux)
-npm run buildwindows:ui # Crea una built del frontend para produccion(windows)
+npm run dev         # Levanta el servidor en modo desarrollo con nodemon
+npm start           # Levanta el servidor en modo producción
+npm run start:test  # Levanta el servidor en modo test (para E2E tests)
+npm run seed        # Poblado inicial de la base de datos con ramos
+npm run build       # Crea una build del backend para producción
+npm run build:ui    # Crea una build del frontend para producción (Linux)
+npm run buildwindows:ui # Crea una build del frontend para producción (Windows)
 ```
 
 ## Scripts disponibles (frontend)
@@ -258,12 +330,6 @@ npm run dev      # Levanta la app en modo desarrollo
 npm run build    # Genera la build de producción
 npm run preview  # Previsualiza la build de producción
 ```
-
-
-## Tecnologías utilizadas
-- [Vite](https://vitejs.dev/) – Bundler y dev server ultrarrápido
-- [React](https://react.dev/) – Biblioteca para interfaces de usuario
-- [JSON Server](https://github.com/typicode/json-server) – API fake REST para simular backend
 
 
 ## Estado global (Redux)
@@ -280,7 +346,7 @@ La aplicación usa **Redux Toolkit** junto con **react-redux** para manejar el e
     
 ## Estructura del proyecto
 ```bash
-├── backend/              # carpeta para Backend(JSON-server)
+├── backend/              # Backend (Node.js + Express + MongoDB)
 ├── frontend/             # Carpeta para FrontEnd(React)
 ├── e2etests/             # Carpeta para E2E testing (Playwright)
 └── README.md
@@ -293,6 +359,7 @@ La aplicación usa **Redux Toolkit** junto con **react-redux** para manejar el e
 ### **Frontend**
 - React + Vite
 - React Router
+- Redux Toolkit + react-redux
 - Axios
 - [Material UI (MUI)](https://mui.com/)
 
@@ -302,5 +369,8 @@ La aplicación usa **Redux Toolkit** junto con **react-redux** para manejar el e
 - JWT para autenticación
 - Bcrypt para hashing de contraseñas
 - Dotenv
+
+### **Testing**
+- Playwright (E2E testing)
 
 ---
