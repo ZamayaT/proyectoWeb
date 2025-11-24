@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import commentRouter from './routes/commentRoutes';
 import courseRouter from './routes/courseRoutes';
+import cors from 'cors';
 import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
@@ -16,6 +17,14 @@ const app = express();
 app.use(express.json());
 app.use(express.static('dist'));
 app.use(cookieParser()); 
+
+// Configurar CORS
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'http://fullstack.dcc.uchile.cl:7188'
+    : 'http://localhost:5173',
+  credentials: true
+}));
 
 // Conectar a MongoDB
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
