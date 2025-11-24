@@ -373,4 +373,29 @@ La aplicación usa **Redux Toolkit** junto con **react-redux** para manejar el e
 ### **Testing**
 - Playwright (E2E testing)
 
----
+## Despliegue en Producción
+
+La aplicación está desplegada en el servidor de la universidad:
+
+**URL**: http://fullstack.dcc.uchile.cl:7188
+
+### Instrucciones de deployment
+
+1. Clonar el repositorio en el servidor
+2. Configurar variables de entorno en `backend/.env` (usar `.env.example` como referencia)
+   - Importante: configurar `PORT=7188` para el puerto asignado
+3. Instalar dependencias y hacer build:
+```bash
+cd backend
+npm install
+npm run build
+
+cd ../frontend
+npm install
+npm run build
+npm run build:ui  # Copia el dist de frontend al backend (en servidor Linux)
+```
+4. Iniciar el servidor en modo producción:
+```bash
+cd backend
+NODE_ENV=production npm start
